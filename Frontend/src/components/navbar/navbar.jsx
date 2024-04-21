@@ -18,7 +18,7 @@ const Navbar = (props) => {
                 Blog N Books
             </div>
 
-            <div className='btns flex flex-row'>
+            <div className='btns flex-row hidden md:flex'>
                 <Button
                     name= "Home"
                 />

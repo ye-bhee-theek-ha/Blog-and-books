@@ -16,10 +16,10 @@ const BlogCard = (props) => {
                             + props.containerclassName}>
                 <img src={props.src} alt="img" className="h-full w-full object-cover" />
             </div>
-            <div className='flex flex-1 flex-col'>
+            <div className='flex flex-1 flex-col justify-around'>
                 <div className='flex flex-row mx-8 mr-14 text-subheading justify-between'>
                     <h3>{props.title}</h3>
-                    <button className='flex h-8 w-8 my-3 rounded-md border-mehroon bg-lorange border justify-center items-center'
+                    <button className='flex h-8 w-8 my-3 rounded-md border-mehroon bg-lorange border justify-center items-center ring-lpink hover:ring-2'
                     >
                         <IconHeartFilled className=''/>
                     </button>
@@ -27,15 +27,15 @@ const BlogCard = (props) => {
                 <div className='flex mx-4 text-text text-start'>
                     <p>{props.discription}</p>
                 </div>
-                <div className='mt-3 flex flex-row justify-around'>
+                <div className='mt-3 flex flex-row justify-between mx-12'>
                     <div className='flex flex-row'>
                         <Button
-                            name = "Read Time 8 mins"
+                            name = "Read Time: 8 mins"
                             btnclassName = "text-sm"
                             containerclassName = "bg-offwhite border-mehroon border bg-opacity-50"
                         />
                         <Button
-                            name = "likes: 8 "
+                            name = "likes: 8"
                             btnclassName = "text-sm"
                             containerclassName = "bg-offwhite border-mehroon border bg-opacity-50"
                         />
@@ -43,8 +43,8 @@ const BlogCard = (props) => {
                     <div>
                         <Button
                             name = "Read Now"
-                            btnclassName = "text-sm"
-                            containerclassName = "bg-lorange border-mehroon border"
+                            btnclassName = "text-sm font-semibold"
+                            containerclassName = "bg-lorange border-mehroon border ring-lpink hover:ring-2"
                             onclick = {() => {return("read blog")}} 
                         />
                     </div>

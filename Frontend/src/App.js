@@ -1,33 +1,22 @@
-import logo from './logo.svg';
 import './App.css';
-import Button from './components/button/button';
-import Card from './components/card/card';
-import Navbar from './components/navbar/navbar';
-import BookCard from './components/bookCard/bookCard';
-import BlogCard from './components/blogCard/blogCard';
+import { Route, Routes } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
+import Home from './screens/Home/Home';
+import Blog from './screens/Blog/Blog';
+import NotFound from './screens/Not Found/NotFound';
 
 function App() {
   return (
-    <div className="App bg-lgreen h-screen">
-      <Navbar/>
-
-      <BookCard
-        src= "https://picsum.photos/130/180"
-      />
-
-      <Button
-        className="text-heading"
-        name= "button"
-        containerclassName= "border"
-      />
-
-      <BlogCard
-        src= "https://picsum.photos/130/180"
-      />
-
-      <Card/>
+    <div className="App bg-green min-h-screen h-full">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/blog/:ID" element={<Blog/>} />
+          <Route path="*" element={<NotFound />}/>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
- 
+
 export default App;
