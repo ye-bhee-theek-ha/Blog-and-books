@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 const Button = (props) => {
 
     return(
-        <div className={"flex items-center justify-center m-2 px-3 h-7 min-w-24 w-fit rounded-full bg-offwhite text-mehroon border-mehroon" 
+        <div className={"flex items-center justify-center m-2 px-3 min-w-24 w-fit rounded-full bg-offwhite text-mehroon border-mehroon" 
                         + " " 
                         + props.containerclassName}>
             <button 

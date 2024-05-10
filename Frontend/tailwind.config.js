@@ -24,8 +24,9 @@ module.exports = {
         'heading': '48px',
         'subheading': '36px',
         "cardtitle": "40px",
-        'text': '20px',
+        'text': '24px',
         'btn': '20px',
+        "bolg_btn": "24px"
       }
     },
   },
