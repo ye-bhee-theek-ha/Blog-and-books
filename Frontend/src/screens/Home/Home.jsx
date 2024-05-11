@@ -27,7 +27,7 @@ const Home = (props) => {
     "https://picsum.photos/130/150",
     "https://picsum.photos/170/180",
     "https://picsum.photos/190/180",
-  ];
+  ];  
 
   return (
     <div>

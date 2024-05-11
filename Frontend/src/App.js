@@ -5,6 +5,7 @@ import Home from './screens/Home/Home';
 import Blog from './screens/Blog/Blog';
 import NotFound from './screens/Not Found/NotFound';
 import Books from './screens/Books/Books'
+import UserAuth from './screens/UserAuth/UserAuth';
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/blog/:ID" element={<Blog/>} />
           <Route path="/Books" element={<Books/>} />
-          <Route path="*" element={<NotFound />}/>
+          <Route path="/auth" element={<UserAuth/>} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </div>
