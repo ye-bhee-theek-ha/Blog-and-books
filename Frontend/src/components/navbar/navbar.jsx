@@ -1,15 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Button from '../button/button'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
     IconSearch,
     IconBooks
 } from "@tabler/icons-react";
+import { useAuth } from '../../Auth/Auth';
 
 const Navbar = (props) => {
 
     const navigate = useNavigate()
+    const {isloggedin} = useAuth()
+
+    const ON_navigate = () => {
+        navigate("/Auth")
+    }
 
     return(
         <div className={"flex flex-row flex-wrap content-center justify-between w-full min-h-12 border-b-2 px-8 border-pink" 
@@ -40,7 +46,8 @@ const Navbar = (props) => {
             <div className='contact'>
                 <Button
                     containerclassName = "bg-transparent border text-mehroon hover:text-offwhite hover:bg-mehroon"
-                    name= "Contact"
+                    name= {isloggedin? "Contact" : "Login"}
+                    onClick = {ON_navigate}
                 />
             </div>
 
