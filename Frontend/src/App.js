@@ -1,6 +1,7 @@
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './Auth/Auth';
 import Home from './screens/Home/Home';
 import Blog from './screens/Blog/Blog';
 import NotFound from './screens/Not Found/NotFound';
@@ -11,13 +12,15 @@ function App() {
   return (
     <div className="App bg-green min-h-screen h-full">
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/blog/:ID" element={<Blog/>} />
-          <Route path="/Books" element={<Books/>} />
-          <Route path="/auth" element={<UserAuth/>} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/blog/:ID" element={<Blog/>} />
+            <Route path="/Books" element={<Books/>} />
+            <Route path="/auth" element={<UserAuth/>} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </div>
   );
