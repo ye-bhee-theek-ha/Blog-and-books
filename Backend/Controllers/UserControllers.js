@@ -1,37 +1,60 @@
 const bcrypt = require('bcrypt');
 const User = require('../Models/UserModels');
+const jwt = require('jsonwebtoken');
 
+// Register a new user
 const registerUser = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ username, email, password: hashedPassword });
+        const { name, email, password } = req.body;
+        const userExists = await User.findOne({ email });
+
+        if (userExists) {
+            return res.status(400).json({ message: 'User already exists' });
+        }
+
+        const user = new User({ name, email, password });
         await user.save();
-        res.status(201).json({ message: 'User registered successfully' });
+
+        res.status(201).json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            token: generateToken(user._id),
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
+// Login a user
 const loginUser = async (req, res) => {
     try {
-        const { username, password } = req.body;
-        const user = await User.findOne({ username });
-        if (!user) {
-            return res.status(401).json({ error: 'Invalid username or password' });
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+
+        if (user && (await user.matchPassword(password))) {
+            res.json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                token: generateToken(user._id),
+            });
+        } else {
+            res.status(401).json({ message: 'Invalid email or password' });
         }
-        const passwordMatch = await bcrypt.compare(password, user.password);
-        if (!passwordMatch) {
-            return res.status(401).json({ error: 'Invalid username or password' });
-        }
-        res.status(200).json({ message: 'Login successful', user });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
+// Generate JWT token
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '30d',
+    });
+};
 
 module.exports = {
     registerUser,
-    loginUser
-}
+    loginUser,
+};

@@ -22,12 +22,10 @@ const BlogSchema = mongoose.Schema({
     lastUpdatedDate: {
         type: Date,
     },
-    tags: [String],
-    slug: {
-        type: String,
-        required: true,
-        unique: true,
-    },
+    tags: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Tag',
+    }],
     visibility: {
         type: String,
         enum: ['public', 'private', 'draft'],
@@ -35,19 +33,15 @@ const BlogSchema = mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['published', 'draft', 'pending', 'archived'],
+        enum: ['published', 'draft', 'archived'],
         default: 'draft',
     },
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Comment', // Assuming you have a Comment model
+        ref: 'Comment',
     }],
     featuredImage: {
         type: String,
-    },
-    metadata: {
-        // Additional metadata fields can be added here
-        // Example: SEO metadata, etc.
     },
     relatedPosts: [{
         type: mongoose.Schema.Types.ObjectId,
