@@ -11,10 +11,10 @@ import { useAuth } from '../../Auth/Auth';
 const Navbar = (props) => {
 
     const navigate = useNavigate()
-    const {isloggedin} = useAuth()
+    const {isloggedin, logout} = useAuth()
 
-    const ON_navigate = () => {
-        navigate("/Auth")
+    const onnav = () => {
+        isloggedin? navigate("/profile"):navigate("/Auth")
     }
 
     return(
@@ -46,8 +46,8 @@ const Navbar = (props) => {
             <div className='contact'>
                 <Button
                     containerclassName = "bg-transparent border text-mehroon hover:text-offwhite hover:bg-mehroon"
-                    name= {isloggedin? "Contact" : "Login"}
-                    onClick = {ON_navigate}
+                    name= {isloggedin? "Profile" : "Login"}
+                    onClick = {onnav}
                 />
             </div>
 

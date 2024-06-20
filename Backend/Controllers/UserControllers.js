@@ -1,9 +1,10 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const User = require('../Models/UserModels');
 const jwt = require('jsonwebtoken');
+const asyncHandler = require("express-async-handler");
 
 // Register a new user
-const registerUser = async (req, res) => {
+const registerUser = asyncHandler (async (req, res) => {
     try {
         const { name, email, password } = req.body;
         const userExists = await User.findOne({ email });
@@ -24,14 +25,14 @@ const registerUser = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-};
+});
 
 // Login a user
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
-
+        console.log(user)
         if (user && (await user.matchPassword(password))) {
             res.json({
                 _id: user._id,

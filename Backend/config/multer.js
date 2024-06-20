@@ -1,5 +1,5 @@
 const multer = require('multer');
-const GridFsStorage = require('multer-gridfs-storage');
+const GridFsStorage = require('multer');
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const path = require('path');

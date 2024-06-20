@@ -26,31 +26,50 @@ const { protect, authorizeAsAuthor } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 // Blog Routes
-router.post('/api/blogs', protect, authorizeAsAuthor, createBlog);
-router.get('/api/blogs', getAllBlogs);
-router.get('/api/blogs/:id', getBlogById);
-router.put('/api/blogs/:id', protect, authorizeAsAuthor, updateBlog);
-router.delete('/api/blogs/:id', protect, authorizeAsAuthor, deleteBlog);
+router.route('/blogs')
+    .post(protect, authorizeAsAuthor, createBlog)
+    .get(getAllBlogs);
+
+router.route('/blogs/:id')
+    .get(getBlogById)
+    .put(protect, authorizeAsAuthor, updateBlog)
+    .delete(protect, authorizeAsAuthor, deleteBlog);
+
 
 // Book Routes
-router.post('/api/book', protect, authorizeAsAuthor, createBook);
-router.get('/api/book', getAllBlogs);
-router.get('/api/book/:id', getBlogById);
-router.put('/api/book/:id', protect, authorizeAsAuthor, updateBlog);
-router.delete('/api/book/:id', protect, authorizeAsAuthor, deleteBlog);
+router.route('/books')
+    .post(protect, authorizeAsAuthor, createBook)
+    .get(getAllBooks); 
+
+router.route('/books/:id')
+    .get(getBookById)
+    .put(protect, authorizeAsAuthor, updateBook)  
+    .delete(protect, authorizeAsAuthor, deleteBook);
+
 
 // Comment Routes
-router.post('/api/comments', protect, createComment);
-router.get('/api/comments/:blogId', getCommentsForPost);
-router.put('/api/comments/:commentId', protect, updateComment);
-router.delete('/api/comments/:commentId', protect, deleteComment);
+router.route('/comments')
+    .post(protect, createComment);
+
+router.route('/comments/:blogId')
+    .get(getCommentsForPost);
+
+router.route('/comments/:commentId')
+    .put(protect, updateComment)
+    .delete(protect, deleteComment);
+
 
 // Tag Routes
-router.post('/api/tags', protect, createTag);
-router.get('/api/tags', getTags);
+router.route('/tags')
+    .post(protect, createTag)
+    .get(getTags);
+
 
 // User Routes
-router.post('/api/users/register', registerUser);
-router.post('/api/users/login', loginUser);
+router.route('/users/register')
+    .post(registerUser);
+
+router.route('/users/login')
+    .post(loginUser);
 
 module.exports = router;

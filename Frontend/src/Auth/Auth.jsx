@@ -1,35 +1,34 @@
-import {  createContext, useContext } from "react";
+import { createContext, useContext } from "react";
 import { useState } from "react";
 
-export const AuthContext=createContext()
+export const AuthContext = createContext();
 
-export const AuthProvider=({children})=>{
+export const AuthProvider = ({ children }) => {
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  const isloggedin = !!token;
 
-    const [token,settoken]=useState(localStorage.getItem('token'))
+  const storeTokenInLS = (serverToken) => {
+    localStorage.setItem('token', serverToken);
+    setToken(serverToken); // Update token state
+  };
 
-    const storeTokenInLS=(serverToken)=>{
-        console.log("token saved")
-        return localStorage.setItem('token', serverToken)
-    }
+  const getToken = () => {
+    return localStorage.getItem('token');
+  };
 
-    const getToken = () => {
-        return localStorage.getItem('token')
-    } 
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    // window.location.reload();
+  };
 
-    let isloggedin =!! token;
-
-    const logout = () => {
-        localStorage.removeItem("token");
-      };
-    
-    return <AuthContext.Provider value={{storeTokenInLS, isloggedin, getToken, logout}}>
-        {children}
+  return (
+    <AuthContext.Provider value={{ storeTokenInLS, isloggedin, getToken, logout }}>
+      {children}
     </AuthContext.Provider>
+  );
+};
 
-
-}
-
-
-export const useAuth=()=>{
-    return useContext(AuthContext)
-}
+export const useAuth = () => {
+  return useContext(AuthContext);
+};

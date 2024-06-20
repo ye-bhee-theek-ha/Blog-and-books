@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import axios from "axios";
+import { useAuth } from "../../Auth/Auth"
 
 
 const LoginForm = (props) => {
@@ -13,28 +15,38 @@ const LoginForm = (props) => {
 
   const navigate = useNavigate();
 
+  const {storeTokenInLS} = useAuth()
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Add signup functionality here (e.g., API call)
-    console.log(formData); // For testing
-    navigate("/"); // Redirect to home page after signup
+    try {
+      const response = await axios.post(
+      "http://localhost:5000/api/users/login",
+      {
+        email: formData.email,
+        password: formData.password
+      }
+    );       
+
+    storeTokenInLS(response.data.token)
+    navigate("/")
+
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        SeterrMsg(error.response.data.message);
+      } else {
+        SeterrMsg("An error occurred. Please try again later.");
+      }
+    }
   };
 
   return (
-    <div className="h-full bg-green flex flex-col justify-center py-4 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-2 text-center text-heading font-Display text-mehroon">
-          Login
-        </h2>
-      </div>
-
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-grey bg-opacity-70 border-2 border-orange rounded-lg mx-5 py-8 px-4 shadow-lg sm:rounded-lg sm:px-10">
+        <>
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
               <label
@@ -104,9 +116,7 @@ const LoginForm = (props) => {
               </button>
             </p>
           </div>
-        </div>
-      </div>
-    </div>
+        </>
   );
 };
 
