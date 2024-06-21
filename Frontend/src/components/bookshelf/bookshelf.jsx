@@ -9,7 +9,29 @@ import Navbar from "../../components/navbar/navbar";
 import './bookshelf.css';
 
 const BookShelf = (props) => {
-    const books = [
+    
+    return (
+        <div className="">
+            <div className="text-cardtitle text-mehroon justify-start flex mx-14">
+                {props.title}
+            </div>
+            <div className="Book Shelf flex flex-row mx-5 overflow-x-auto justify-evenly mask">
+                {props.books.map((book, index) => (
+                    <BookCard key={index} src={book} />
+                ))}
+            </div>
+        </div>
+    )
+};
+
+BookShelf.propTypes = {
+    title: PropTypes.string,
+    books: PropTypes.array
+};
+
+BookShelf.defaultProps = {
+    title: "Books by the Author",
+    books: [
         "https://picsum.photos/100/180",
         "https://picsum.photos/120/180",
         "https://picsum.photos/130/190",
@@ -23,22 +45,6 @@ const BookShelf = (props) => {
         "https://picsum.photos/170/180",
         "https://picsum.photos/190/180",
     ]
-    return (
-        <div className="">
-            <div className="text-cardtitle text-mehroon justify-start flex mx-14">
-                Books by the Author
-            </div>
-            <div className="Book Shelf flex flex-row mx-5 overflow-x-auto justify-normal mask">
-                {books.map((book, index) => (
-                    <BookCard key={index} src={book} />
-                ))}
-            </div>
-        </div>
-    )
 };
-
-BookShelf.propTypes = {};
-
-BookShelf.defaultProps = {};
 
 export default BookShelf;

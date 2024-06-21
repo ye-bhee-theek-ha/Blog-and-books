@@ -32,7 +32,6 @@ const Home = (props) => {
   return (
     <div>
       <Navbar />
-
       <div className="h-80 flex flex-row justify-between mx-10 items-center">
         <h1 className="text-hero text-mehroon w-1/2 md:w-full justify-start flex">
           heading

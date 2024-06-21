@@ -24,6 +24,7 @@ module.exports = {
         'heading': '48px',
         'subheading': '36px',
         "cardtitle": "40px",
+        "profilehead": "30px",
         'text': '24px',
         'btn': '20px',
         "bolg_btn": "24px"
