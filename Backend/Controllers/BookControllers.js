@@ -6,36 +6,32 @@ const upload = require('../config/multer');
 // Create a new book with file upload
 const createBook = async (req, res) => {
     try {
-        upload(req, res, async (err) => {
-            if (err) {
-                return res.status(400).json({ error: err.message });
-            }
-
-            if (!req.file) {
-                return res.status(400).json({ error: 'No file uploaded' });
-            }
-
-            const { title, author, tags, visibility, featuredImage } = req.body;
-
-            const newBook = new Book({
-                title,
-                author,
-                tags,
-                visibility,
-                featuredImage,
-                file: {
-                    filename: req.file.filename,
-                    fileId: req.file.id
-                },
-            });
-
-            await newBook.save();
-            res.status(201).json(newBook);
-        });
+      if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+  
+      const { title, description, author, tags, featuredImage } = req.body;
+  
+      const newBook = new Book({
+        title,
+        author,
+        description,
+        tags: JSON.parse(tags),
+        featuredImage,
+        file: {
+          filename: req.file.filename,
+          fileId: req.file.id
+        },
+      });
+  
+      await newBook.save();
+      res.status(201).json(newBook);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
 };
+
+
 
 // Get all books
 const getAllBooks = async (req, res) => {

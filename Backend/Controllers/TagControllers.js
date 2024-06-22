@@ -3,9 +3,19 @@ const Tag = require("../Models/TagModels");
 // Create a new tag
 const createTag = async (req, res) => {
     try {
-        const newTag = new Tag(req.body);
+        const { name } = req.body;
+
+        // Check if the tag already exists
+        const existingTag = await Tag.findOne({ name });
+
+        if (existingTag) {
+            return res.status(400).json({ error: "Tag already exists" });
+        }
+
+        const newTag = new Tag({ name });
         await newTag.save();
         res.status(201).json(newTag);
+        
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
