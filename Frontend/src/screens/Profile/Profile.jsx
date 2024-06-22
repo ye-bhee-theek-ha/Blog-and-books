@@ -1,12 +1,16 @@
 import React from "react";
 import { IconUser, IconBooks, IconHeart, IconEdit } from "@tabler/icons-react";
 import Navbar from "../../components/navbar/navbar";
-import Button from "../../components/button/button"; // Example import for button, adjust as needed
+import Button from "../../components/button/button"; 
 import BookShelf from "../../components/bookshelf/bookshelf";
 import Card from "../../components/Card/Card";
+import { useNavigate } from "react-router-dom";
 
 
 const Profile = () => {
+
+    const navigate = useNavigate()
+
     const profileData = {
       name: "John Doe",
       email: "john.doe@example.com",
@@ -24,6 +28,14 @@ const Profile = () => {
     };
   
     const handleUpdateProfile = () => {
+      alert("Update profile functionality will be implemented here.");
+    };
+
+    const handleUploadBook = () => {
+      navigate("uploadBook")
+    };
+
+    const handleUploadBlog = () => {
       alert("Update profile functionality will be implemented here.");
     };
   
@@ -50,7 +62,7 @@ const Profile = () => {
                 </p>
               </div>
 
-              <div className="flex flex-col font-normal text">
+              <div className="flex flex-col font-light">
                 <div className="ml-auto">
                   <Button
                     onClick={handleUpdateProfile}
@@ -64,8 +76,8 @@ const Profile = () => {
 
                 <div className="ml-auto">
                   <Button
-                    onClick={handleUpdateProfile}
-                    name={"Update Profile"}
+                    onClick={handleUploadBook}
+                    name={"Upload Book"}
                     containerclassName={"hover:ring-2 ring-orange"}
                     btnclassName={"flex-nowrap"}
                   >
@@ -75,8 +87,8 @@ const Profile = () => {
 
                 <div className="ml-auto">
                   <Button
-                    onClick={handleUpdateProfile}
-                    name={"Update Profile"}
+                    onClick={handleUploadBlog}
+                    name={"Upload Blog"}
                     containerclassName={"hover:ring-2 ring-orange"}
                     btnclassName={"flex-nowrap"}
                   >

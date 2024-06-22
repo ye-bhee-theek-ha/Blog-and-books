@@ -8,6 +8,7 @@ import NotFound from './screens/Not Found/NotFound';
 import Books from './screens/Books/Books'
 import UserAuth from './screens/UserAuth/UserAuth';
 import Profile from './screens/Profile/Profile';
+import UploadBook from './screens/UploadBook/UploadBook';
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
             <Route path="/blog/:ID" element={<Blog/>} />
             <Route path="/Books" element={<Books/>} />
             <Route path="/profile" element={<Profile/>} />
+            <Route path="/profile/UploadBook" element={<UploadBook/>} />
+            <Route path="/profile/UploadBlog" element={<Profile/>} />
             <Route path="/auth" element={<UserAuth/>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
