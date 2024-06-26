@@ -17,13 +17,15 @@ const {
 } = require('../Controllers/UserControllers');
 
 const {
-    createBook, getAllBooks, getBookById, updateBook, deleteBook
+    createBook, getAllBooks, getBookById, getBookDetailsById, updateBook, deleteBook
 } = require('../Controllers/BookControllers');
 
 
 const { protect, authorizeAsAuthor } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
+const upload = require("../config/multer")
+
 
 // Blog Routes
 router.route('/blogs')
@@ -38,13 +40,16 @@ router.route('/blogs/:id')
 
 // Book Routes
 router.route('/books')
-    .post(protect, authorizeAsAuthor, createBook)
+    .post(protect, authorizeAsAuthor, upload.single("bookfile"), createBook)
     .get(getAllBooks); 
 
-router.route('/books/:id')
+router.route('/book/:id')
     .get(getBookById)
     .put(protect, authorizeAsAuthor, updateBook)  
     .delete(protect, authorizeAsAuthor, deleteBook);
+
+router.route('/bookDetails/:id')
+    .get(getBookDetailsById)
 
 
 // Comment Routes

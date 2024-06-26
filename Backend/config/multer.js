@@ -1,8 +1,7 @@
 const multer = require('multer');
-const GridFsStorage = require('multer-gridfs-storage');
-const crypto = require('crypto');
+const { GridFsStorage } = require('multer-gridfs-storage');
 const path = require('path');
-const mongoose = require('mongoose');
+const crypto = require('crypto');
 
 // Create storage engine
 const storage = new GridFsStorage({
@@ -16,7 +15,7 @@ const storage = new GridFsStorage({
         const filename = buf.toString('hex') + path.extname(file.originalname);
         const fileInfo = {
           filename: filename,
-          bucketName: 'books'
+          bucketName: 'BookUploads'
         };
         resolve(fileInfo);
       });
@@ -24,6 +23,22 @@ const storage = new GridFsStorage({
   }
 });
 
-const upload = multer({ storage });
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = /pdf/;
+  const mimeType = allowedTypes.test(file.mimetype);
+  const extName = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+
+  if (mimeType && extName) {
+    cb(null, true);
+  } else {
+    cb(new Error('Unsupported file type. Only PDF files are allowed.'), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20 MB limit
+  fileFilter: fileFilter
+});
 
 module.exports = upload;

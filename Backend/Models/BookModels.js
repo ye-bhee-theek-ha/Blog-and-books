@@ -10,6 +10,10 @@ const BookSchema = mongoose.Schema({
         required: true,
     },
     author: {
+        type: String,
+        required: true,
+    },
+    uploader: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
@@ -40,7 +44,7 @@ const BookSchema = mongoose.Schema({
     }],
     file: {
         filename: String,
-        fileId: mongoose.Schema.Types.ObjectId,
+        id: mongoose.Schema.Types.ObjectId,
     },
 });
 

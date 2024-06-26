@@ -1,60 +1,129 @@
 const Book = require('../Models/BookModels');
 const mongoose = require('mongoose');
 const { GridFSBucket } = require('mongodb');
+const { conn, getGfs } = require('../config/gfs');
 const upload = require('../config/multer');
 
 // Create a new book with file upload
 const createBook = async (req, res) => {
     try {
+      console.log("File received:", req.file);
+  
       if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
       }
   
       const { title, description, author, tags, featuredImage } = req.body;
-  
+
+      console.log("body received:", req.body);
+      
       const newBook = new Book({
         title,
         author,
         description,
+        "uploader": req.user._id,
         tags: JSON.parse(tags),
         featuredImage,
         file: {
           filename: req.file.filename,
-          fileId: req.file.id
+          id: req.file.id
         },
       });
   
       await newBook.save();
       res.status(201).json(newBook);
     } catch (error) {
+        console.log(error)
       res.status(500).json({ error: error.message });
     }
-};
-
+  };
 
 
 // Get all books
 const getAllBooks = async (req, res) => {
     try {
-        const books = await Book.find().populate('author', 'name').populate('tags', 'name');
+        const books = await Book.find()
+            .populate('uploader', 'name _id')
+            .populate('tags', 'name');
         res.status(200).json(books);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error('Error fetching all books:', error);
+        res.status(500).json({ error: 'Server error' });
     }
 };
 
+
 // Get a single book by ID
+const getBookDetailsById = async (req, res) => {
+  const bookId = req.params.id;
+  try {
+    const book = await Book.findById(bookId);
+    res.status(200).json(book);
+  } catch (error) {
+    console.error('Error fetching all books:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+}
+
+
 const getBookById = async (req, res) => {
+    const bookId = req.params.id;
+    const gfs = getGfs();
+
     try {
-        const book = await Book.findById(req.params.id).populate('author', 'name').populate('tags', 'name');
-        if (!book) {
-            return res.status(404).json({ message: 'Book not found' });
-        }
-        res.status(200).json(book);
+      const book = await Book.findById(bookId);
+      if (!book || !book.file || !book.file.id) {
+        return res.status(404).json({ error: 'Book or file not found' });
+      }
+  
+      const fileId = book.file.id;
+          
+      let fileObjectId;
+      if (mongoose.mongo.ObjectId.isValid(fileId) && typeof fileId === 'object') {
+        fileObjectId = fileId;
+      } else if (mongoose.mongo.ObjectId.isValid(fileId)) {
+        fileObjectId = new mongoose.mongo.ObjectId(fileId);
+      } else {
+        return res.status(400).json({ error: 'Invalid file ID format' });
+      }
+  
+      if (!gfs) {
+        return res.status(500).json({ error: 'GridFS is not initialized' });
+      }
+      
+      const file = await gfs.files.findOne({ _id: fileObjectId });
+
+      if (!file) {
+        return res.status(404).json({ error: 'File not found' });
+      }
+
+      if (file.contentType !== 'application/pdf') {
+        return res.status(404).json({ error: 'Not a PDF file' });
+      }
+
+      if (!file) {
+          return res.status(404).json({ error: 'File not found' });
+      }
+
+      if (file.contentType !== 'application/pdf') {
+          return res.status(404).json({ error: 'Not a PDF file' });
+      }
+
+      const bucket = new mongoose.mongo.GridFSBucket(conn.db, {
+          bucketName: 'BookUploads'
+      });
+
+      const readstream = bucket.openDownloadStream(file._id);
+      res.set('Content-Type', file.contentType);
+      readstream.pipe(res);
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
     }
-};
+  };
+  
+  
 
 // Update a book by ID
 const updateBook = async (req, res) => {
@@ -69,29 +138,57 @@ const updateBook = async (req, res) => {
     }
 };
 
+
+
 // Delete a book by ID
 const deleteBook = async (req, res) => {
+    const bookId = req.params.id;
+    const gfs = getGfs();
+
     try {
-        const book = await Book.findByIdAndDelete(req.params.id);
-        if (!book) {
-            return res.status(404).json({ message: 'Book not found' });
+        // Find the book to get the file ID
+        const book = await Book.findById(bookId);
+        if (!book || !book.file || !book.file.id) {
+            return res.status(404).json({ error: 'Book or file not found' });
         }
-        // Delete file from GridFS
-        const bucket = new GridFSBucket(mongoose.connection.db, {
-            bucketName: 'books' // Your MongoDB collection name
+
+        const fileId = book.file.id;
+
+        // Validate the fileId format
+        if (!mongoose.Types.ObjectId.isValid(fileId)) {
+            return res.status(400).json({ error: 'Invalid file ID format' });
+        }
+
+        // Convert fileId to ObjectId
+        const fileObjectId = new mongoose.Types.ObjectId(fileId);
+
+        // Delete the book document
+        await Book.findByIdAndDelete(bookId);
+
+        // Delete the file from GridFS
+        const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+            bucketName: 'BookUploads'
         });
-        await bucket.delete(new mongoose.Types.ObjectId(book.file.fileId));
-        
-        res.status(204).end();
+
+        bucket.delete(fileObjectId, (err) => {
+            if (err) {
+                return res.status(500).json({ error: 'Error deleting file from GridFS' });
+            }
+            res.status(200).json({ message: 'Book and file deleted successfully' });
+        });
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error(error);
+        res.status(500).json({ error: 'Server error' });
     }
 };
+
 
 module.exports = {
     createBook,
     getAllBooks,
     getBookById,
+    getBookDetailsById,
     updateBook,
     deleteBook
 };

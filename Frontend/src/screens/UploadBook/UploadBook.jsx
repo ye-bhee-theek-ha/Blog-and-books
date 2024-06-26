@@ -13,6 +13,7 @@ const UploadBook = () => {
   const [tag_vlaue, setTag_value] = useState(null);
 
   const [image, setImage] = useState(null);
+  const [image64, setImage64] = useState(null);
   const [file, setFile] = useState(null);
 
   const [tags, setTags] = useState([]);
@@ -125,9 +126,14 @@ const UploadBook = () => {
     if (img) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImage(reader.result.split(",")[1]);
+        const base64String = reader.result.split(",")[1];
+        console.log("Base64 String:", base64String);
+        setImage64(base64String);
       };
-      reader.readAsDataURL(img);
+      const url = URL.createObjectURL(img);
+      setImage(url);
+    } else {
+      console.log("No image selected");
     }
   };
 
@@ -140,19 +146,26 @@ const UploadBook = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = getToken();
+
+    if (!file) {
+      alert('Please select a file to upload.');
+      return;
+    }
 
     const formData = new FormData();
     formData.append("title", title);
     formData.append("author", author);
     formData.append("description", description);
-    formData.append("featuredImage", image);
-    formData.append("bookFile", file); // PDF file
+    formData.append("featuredImage", image64);
+    formData.append("bookfile", file); // PDF file
     formData.append("tags", JSON.stringify(selectedTags.map(tag => tag.id)));
 
     try {
-      const response = await axios.post("/api/books/upload", formData, {
+      const response = await axios.post("http://localhost:5000/api/books", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${token}`
         },
       });
       setMessage("Book uploaded successfully!");
@@ -210,7 +223,6 @@ const UploadBook = () => {
                       onChange={(e) => {setTag_value(e.target.value);handleTagInputChange(e)}}
                       onKeyDown={handleTagKeyDown}
                       className="w-1/2 bg-transparent h-fit border-none focus:outline-none"
-                      required
                     />
                     {showDropdown && filteredTags.length > 0 && (
                       <div className="absolute mt-10 rounded-md bg-lorange border-mehroon shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">

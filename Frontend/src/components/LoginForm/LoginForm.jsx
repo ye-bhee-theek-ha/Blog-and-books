@@ -34,6 +34,7 @@ const LoginForm = (props) => {
     );       
 
     storeTokenInLS(response.data.token)
+    
     navigate("/")
 
     } catch (error) {
