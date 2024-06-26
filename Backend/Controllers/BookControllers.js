@@ -60,7 +60,7 @@ const getBookDetailsById = async (req, res) => {
     const book = await Book.findById(bookId);
     res.status(200).json(book);
   } catch (error) {
-    console.error('Error fetching all books:', error);
+    console.error('Error fetching book:', error);
     res.status(500).json({ error: 'Server error' });
   }
 }
