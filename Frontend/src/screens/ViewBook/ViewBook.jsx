@@ -6,7 +6,6 @@ import PdfViewer from '../../components/PDFViewer/PDFViewer';
 const SingleBook = () => {
 
   const id = useParams();
-  console.log(id.ID)
   const [bookTitle, setBookTitle] = useState('');
   const [bookDescription, setBookDescription] = useState('');
   const [authorName, setAuthorName] = useState('');
@@ -17,14 +16,19 @@ const SingleBook = () => {
   useEffect(() => {
     const fetchBookDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/bookDetails/${id.ID}`);
-        console.log(response)
+        const response = await axios.get(`http://localhost:5000/api/bookDetails/${id}`);
         const book = response.data;
         setBookTitle(book.title);
         setBookDescription(book.description);
         setAuthorName(book.author);
         setFeaturedImage(book.featuredImage);
-        setPdfFile(`http://localhost:5000/api/book/${id.ID}`);
+
+        const pdfResponse = await axios.get(`http://localhost:5000/api/book/${book.file.id}`, {
+          responseType: 'blob'
+        });
+        const pdfBlob = new Blob([pdfResponse.data], { type: 'application/pdf' });
+        const pdfBlobUrl = URL.createObjectURL(pdfBlob);
+        setPdfFile(pdfBlobUrl);
       } catch (error) {
         console.error('Error fetching book details:', error);
       }
@@ -32,6 +36,7 @@ const SingleBook = () => {
 
     fetchBookDetails();
   }, [id]);
+
 
   const handleViewModeChange = () => {
     if (viewMode == "page")
