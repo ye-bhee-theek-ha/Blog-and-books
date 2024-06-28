@@ -7,7 +7,7 @@ import * as PDFJSWorker from "pdfjs-dist/build/pdf.worker";
 
 
 
-const ViewBooks = () => {
+const ViewBlog = () => {
 
   const id = useParams();
 
@@ -90,4 +90,4 @@ const ViewBooks = () => {
   );
 };
 
-export default ViewBooks;
+export default ViewBlog;
