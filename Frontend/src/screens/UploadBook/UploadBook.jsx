@@ -10,12 +10,12 @@ const UploadBook = () => {
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState("");
   const [publicationDate, setPublicationDate] = useState("");
-  const [tag_vlaue, setTag_value] = useState(null);
 
   const [image, setImage] = useState(null);
   const [image64, setImage64] = useState(null);
   const [file, setFile] = useState(null);
-
+  
+  const [tag_vlaue, setTag_value] = useState(null);
   const [tags, setTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [filteredTags, setFilteredTags] = useState([]);
@@ -179,7 +179,7 @@ const UploadBook = () => {
     <div className="min-h-screen h-full w-full">
       <Navbar />
       <div className="w-full flex justify-center">
-        <div className="max-w-[1200px] w-full justify-self-center my-12 bg-orange bg-opacity-75 border-2 border-mehroon text-mehroon font-Display px-4 mx-8 py-6 rounded-lg">
+        <div className="max-w-[1200px] w-full justify-self-center my-12 bg-orange bg-opacity-50 border-2 border-mehroon text-mehroon font-Display px-4 mx-8 py-6 rounded-lg">
           <div className="overflow-hidden p-6 flex flex-col">
             <h2 className="text-profilehead font-bold mb-4">Upload a New Book</h2>
 

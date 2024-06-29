@@ -28,7 +28,7 @@ const BlogSchema = mongoose.Schema({
     }],
     visibility: {
         type: String,
-        enum: ['public', 'private', 'draft'],
+        enum: ['public', 'private'],
         default: 'draft',
     },
     status: {
@@ -40,9 +40,9 @@ const BlogSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment',
     }],
-    featuredImage: {
-        type: String,
-    },
+    // featuredImage: {
+    //     type: String,
+    // },
     relatedPosts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Blog',
