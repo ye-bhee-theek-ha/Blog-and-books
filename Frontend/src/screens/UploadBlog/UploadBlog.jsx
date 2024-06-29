@@ -4,7 +4,7 @@ import axios from "axios";
 import { useAuth } from "../../Auth/Auth"
 
 
-const UploadBook = () => {
+const UploadBlog = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [description, setDescription] = useState("");
@@ -332,4 +332,4 @@ const UploadBook = () => {
   );
 };
 
-export default UploadBook;
+export default UploadBlog;

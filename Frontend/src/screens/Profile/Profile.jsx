@@ -3,7 +3,7 @@ import { IconUser, IconBooks, IconHeart, IconEdit } from "@tabler/icons-react";
 import Navbar from "../../components/navbar/navbar";
 import Button from "../../components/button/button"; 
 import BookShelf from "../../components/bookshelf/bookshelf";
-import Card from "../../components/Card/Card";
+import Card from "../../components/card/Card";
 import { useNavigate } from "react-router-dom";
 
 

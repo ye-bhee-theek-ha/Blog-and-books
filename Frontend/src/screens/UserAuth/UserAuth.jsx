@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { IconSearch, IconBooks } from "@tabler/icons-react";
 import Button from "../../components/button/button";
 import BookCard from "../../components/bookCard/bookCard";
-import Card from "../../components/Card/Card";
+import Card from "../../components/card/Card";
 import NotificationCard from "../../components/NotificationCard/NotificationCard";
 import Navbar from "../../components/navbar/navbar";
 import SignupForm from "../../components/SignupForm/SignupForm";

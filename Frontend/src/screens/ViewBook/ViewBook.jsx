@@ -3,8 +3,6 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import PdfViewer from '../../components/PDFViewer/PDFViewer';
 import { pdfjs } from 'react-pdf';
-import * as PDFJSWorker from "pdfjs-dist/build/pdf.worker";
-
 
 
 const ViewBooks = () => {
@@ -18,10 +16,12 @@ const ViewBooks = () => {
   const [pdfFile, setPdfFile] = useState(null);
   const [viewMode, setViewMode] = useState('page');
 
-  pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-
-
+  console.log(pdfjs.version)
   
+  pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+  
+
+
   useEffect(() => {
     const fetchBookDetails = async () => {
       try {
