@@ -36,7 +36,7 @@ const Profile = () => {
     };
 
     const handleUploadBlog = () => {
-      alert("Update profile functionality will be implemented here.");
+      navigate("uploadBlog")
     };
   
     return (
