@@ -2,17 +2,16 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../../components/navbar/navbar";
 import axios from "axios";
 import { useAuth } from "../../Auth/Auth"
-import { EditorState, convertToRaw, ContentState } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import Button from "../../components/button/button";
+import BlogEditor from "../../components/BlogEditor/BlogEditor";
 
 const UploadBlog = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState("");
   const [publicationDate, setPublicationDate] = useState("");
+  const [link_blog, SetLink_blog] = useState("");
 
-  const [tag_vlaue, setTag_value] = useState(null);
+  const [tag_vlaue, setTag_value] = useState("");
   const [tags, setTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [filteredTags, setFilteredTags] = useState([]);
@@ -42,20 +41,10 @@ const UploadBlog = () => {
     }
   };
 
-  const [editorState, setEditorState] = useState(() =>
-    EditorState.createEmpty()
-  );
-
-  const handleEditorStateChange = (state) => {
-    setEditorState(state);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const contentState = editorState.getCurrentContent();
-    console.log('Title:', title);
-    console.log('Content:', JSON.stringify(convertToRaw(contentState)));
-    // Handle form submission or API call here
+   
   };
 
   const HandleVisibilityChange = () => {
@@ -192,13 +181,29 @@ const UploadBlog = () => {
                     required
                   />
                 </div>
-                <div>
-                  <label className="text-text">Visibility</label>
-                  <div className="w-full flex justify-center">
-                    <Button
-                      name= {visibility}
-                      onClick= {HandleVisibilityChange}
-                    />
+                <div className="flex flex-row justify-evenly">
+                  <div>
+                    <label className="text-text">Link A Blog</label>
+                    <div className="w-full flex justify-center">
+                      <input
+                      type="text"
+                      value={link_blog}
+                      onChange={(e) => SetLink_blog(e.target.value)}
+                      className="w-full px-4 py-1 border border-mehroon bg-orange rounded-lg ring-lorange text-offwhite font-Display text-btn focus:outline-none focus:ring focus:border-orange"
+                      placeholder="link or blog code..."
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-text">Visibility</label>
+                    <div className="w-full flex justify-center">
+                      <Button
+                        name= {visibility}
+                        onClick= {HandleVisibilityChange}
+                        containerclassName= {"h-full"}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -264,14 +269,7 @@ const UploadBlog = () => {
                   Convert thoughts to text here
                 </label>
                 <div className="mt-1">
-                  <Editor
-                    editorState={editorState}
-                    onEditorStateChange={handleEditorStateChange}
-                    toolbarClassName="flex sticky top-0 z-10 bg-blue"
-                    wrapperClassName="mt-4 bg-red border rounded-md shadow-sm focus-within:ring focus-within:ring-orange-200 focus-within:border-orange-200"
-                    editorClassName="px-4 py-2 bg-green"
-
-                  />
+                    <BlogEditor/>
                 </div>
               </div>
               <div className="flex justify-end">
