@@ -21,7 +21,7 @@ module.exports = {
       },
       fontSize: {
         'hero': '68px',
-        'heading': '48px',
+        'heading': '44px',
         'subheading': '36px',
         "cardtitle": "40px",
         "profilehead": "30px",
