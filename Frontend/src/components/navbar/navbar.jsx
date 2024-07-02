@@ -46,7 +46,7 @@ const Navbar = (props) => {
             <div className='contact'>
                 <Button
                     containerclassName = "bg-transparent border text-mehroon hover:text-offwhite hover:bg-mehroon"
-                    name= {isloggedin? "Profile" : "Login"}
+                    name= {props.title != "Title"? props.title : isloggedin? "Profile" : "Login"}
                     onClick = {onnav}
                 />
             </div>

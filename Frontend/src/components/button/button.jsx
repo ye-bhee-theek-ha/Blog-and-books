@@ -10,6 +10,7 @@ const Button = (props) => {
             <button 
                 className={"text-btn flex flex-wrap flex-row items-center" + " " + props.btnclassName}
                 onClick={props.onClick}
+                type={props.type}
             >
                 {props.children}
                 {props.name}
@@ -21,6 +22,7 @@ const Button = (props) => {
 Button.prototypes = {
     onClick: PropTypes.func,
     name: PropTypes.string,
+    type: PropTypes.string,
     containerclassName: PropTypes.string,
     btnclassName: PropTypes.string,
 }
@@ -28,6 +30,7 @@ Button.prototypes = {
 Button.defaultProps = {
     onClick: () => {console.log("btn pressed.")},
     name: "Button",
+    type: "button",
     containerclassName: "",
     btnclassName: "",
 }

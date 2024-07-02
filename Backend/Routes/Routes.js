@@ -13,7 +13,7 @@ const {
 } = require('../Controllers/TagControllers');
 
 const { 
-    registerUser, loginUser 
+    registerUser, loginUser, getInfo
 } = require('../Controllers/UserControllers');
 
 const {
@@ -76,5 +76,8 @@ router.route('/users/register')
 
 router.route('/users/login')
     .post(loginUser);
+
+router.route('/users/getInfo')
+    .get(protect, getInfo);
 
 module.exports = router;

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../../components/navbar/navbar";
 import axios from "axios";
+import {IconX} from "@tabler/icons-react"
 import { useAuth } from "../../Auth/Auth"
+import Loader from "../../components/Loader/Loader";
 
 
 const UploadBook = () => {
@@ -23,6 +25,7 @@ const UploadBook = () => {
 
   const {getToken} = useAuth()
 
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchTags();
@@ -37,10 +40,6 @@ const UploadBook = () => {
     }
   };
 
-  console.log("all")
-  console.log(tags)
-  console.log("selected")
-  console.log(selectedTags)
 
   const handleTagKeyDown = async (event) => {
     handleTagInputChange(event)
@@ -65,7 +64,6 @@ const UploadBook = () => {
                 );
                 tagObj = { name: response.data.name, id: response.data._id };
                 setTags([...tags, tagObj]);
-                console.log(tagObj)
               } catch (error) {
                 console.error("Error creating new tag:", error);
                 continue;
@@ -158,10 +156,13 @@ const UploadBook = () => {
     formData.append("author", author);
     formData.append("description", description);
     formData.append("featuredImage", image64);
-    formData.append("bookfile", file); // PDF file
+    formData.append("bookfile", file);
     formData.append("tags", JSON.stringify(selectedTags.map(tag => tag.id)));
 
+    console.log(formData)
+    
     try {
+      setLoading(true);
       const response = await axios.post("http://localhost:5000/api/books", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -169,9 +170,11 @@ const UploadBook = () => {
         },
       });
       setMessage("Book uploaded successfully!");
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("There was an error uploading the book!", error);
-      setMessage("Failed to upload book.");
+      setMessage("Failed to upload book: " + error.response.data.message);
     }
   };
 
@@ -180,6 +183,7 @@ const UploadBook = () => {
       <Navbar />
       <div className="w-full flex justify-center">
         <div className="max-w-[1200px] w-full justify-self-center my-12 bg-orange bg-opacity-50 border-2 border-mehroon text-mehroon font-Display px-4 mx-8 py-6 rounded-lg">
+          {loading && Loader}
           <div className="overflow-hidden p-6 flex flex-col">
             <h2 className="text-profilehead font-bold mb-4">Upload a New Book</h2>
 
@@ -279,11 +283,20 @@ const UploadBook = () => {
                 </div>
                 <div className="h-40 w-32 border-2 border-mehroon mx-6 mt-8 rounded-md shadow">
                   {image ? (
-                    <img
-                      src={image}
-                      alt="Uploaded"
-                      className="h-40 w-32 object-cover mb-4 rounded-md bg-clip-padding"
-                    />
+                    <div className="relative">
+                      <img
+                        src={image}
+                        alt="Uploaded"
+                        className="h-40 w-32 object-cover mb-4 rounded-md bg-clip-padding"
+                      />
+                      <div className="absolute h-5 w-5 rounded-full bg-white bg-opacity-50 right-2 top-2 hover:bg-opacity-50">
+                        <button
+                          onClick={() => setImage(null)}
+                        >
+                          <IconX className="h-5 w-5 text-mehroon"/>
+                        </button>
+                      </div>
+                    </div>
                   ) : (
                     <div className="bg-gray-200 bg-opacity-25 w-full h-full flex flex-col items-center justify-center mb-4 rounded-md bg-clip-padding">
                       <input

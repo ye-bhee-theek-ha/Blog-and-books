@@ -4,12 +4,14 @@ import axios from "axios";
 import { useAuth } from "../../Auth/Auth"
 import Button from "../../components/button/button";
 import BlogEditor from "../../components/BlogEditor/BlogEditor";
+import {
+  IconX
+} from "@tabler/icons-react";
 
 const UploadBlog = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState("");
   const [publicationDate, setPublicationDate] = useState("");
-  const [link_blog, SetLink_blog] = useState("");
 
   const [tag_vlaue, setTag_value] = useState("");
   const [tags, setTags] = useState([]);
@@ -19,14 +21,15 @@ const UploadBlog = () => {
 
   const [image, setImage] = useState(null);
   const [image64, setImage64] = useState(null);
-  const [file, setFile] = useState(null);
 
-  const [status, SetStatus] = useState("")
-  const [visibility, SetVisibility] = useState("Public")
+  const [status, SetStatus] = useState("Published");
+  const [visibility, SetVisibility] = useState("Public");
     
-  const {getToken} = useAuth()
+  const {getToken} = useAuth();
 
- const [message, setMessage] = useState("");
+  const [content,  SetContent] = useState(null);
+
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     fetchTags();
@@ -41,10 +44,40 @@ const UploadBlog = () => {
     }
   };
 
-
-  const handleSubmit = (e) => {
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
-   
+
+    const token = getToken();
+    SetContent(localStorage.getItem("content"))
+
+    const data = {
+      title: title,
+      authorName: author,
+      publicationDate: publicationDate,
+      tags: JSON.stringify(selectedTags.map(tag => tag.id)),
+      content: content,
+      image: image64,
+      status: status,
+      visibility: visibility,
+    };
+
+    console.log(data)
+    console.log(image64)
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/blogs",
+        data,
+        { 
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setMessage("Blog uploaded successfully");
+    } catch (error) {
+      console.error("Error uploading blog:", error);
+      setMessage("Error uploading blog");
+    }
   };
 
   const HandleVisibilityChange = () => {
@@ -170,32 +203,32 @@ const UploadBlog = () => {
                   </p>
                 )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 space-x-2">
-                <div>
-                  <label className="text-text">Title</label>
-                  <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="w-full px-4 py-1 border border-mehroon bg-orange rounded-lg ring-lorange text-offwhite font-Display text-btn focus:outline-none focus:ring focus:border-orange"
-                    required
-                  />
-                </div>
-                <div className="flex flex-row justify-evenly">
+              <div className="w-full flex flex-col items-center">
+                <label className="text-text">Title</label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-fit min-w-80 px-4 py-1 border border-mehroon bg-orange rounded-lg ring-lorange text-offwhite font-Display text-btn focus:outline-none focus:ring focus:border-orange"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 space-x-2">
+                <div className="flex flex-row justify-evenly col-span-2 items-center">
                   <div>
-                    <label className="text-text">Link A Blog</label>
+                    <label className="text-text">Author</label>
                     <div className="w-full flex justify-center">
                       <input
                       type="text"
-                      value={link_blog}
-                      onChange={(e) => SetLink_blog(e.target.value)}
+                      value={author}
+                      onChange={(e) => setAuthor(e.target.value)}
                       className="w-full px-4 py-1 border border-mehroon bg-orange rounded-lg ring-lorange text-offwhite font-Display text-btn focus:outline-none focus:ring focus:border-orange"
-                      placeholder="link or blog code..."
                       />
                     </div>
                   </div>
 
-                  <div>
+                  <div> 
                     <label className="text-text">Visibility</label>
                     <div className="w-full flex justify-center">
                       <Button
@@ -204,6 +237,45 @@ const UploadBlog = () => {
                         containerclassName= {"h-full"}
                       />
                     </div>
+                  </div>
+                </div>
+
+                
+              
+                <div className="w-full flex justify-center">
+                  <div className="h-40 w-32 border-2 border-mehroon mx-6 mt-8 rounded-md shadow">
+                  {image ? (
+                    <div className="relative">
+                      <img
+                        src={image}
+                        alt="Uploaded"
+                        className="h-40 w-32 object-cover mb-4 rounded-md bg-clip-padding"
+                      />
+                      <div className="absolute h-5 w-5 rounded-full bg-white bg-opacity-50 right-2 top-2 hover:bg-opacity-50">
+                        <button
+                          onClick={() => setImage(null)}
+                        >
+                          <IconX className="h-5 w-5 text-mehroon"/>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-gray-200 bg-opacity-25 w-full h-full flex flex-col items-center justify-center mb-4 rounded-md bg-clip-padding">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="book_cover block w-full text-sm text-offwhite
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-full file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-violet-50 file:text-mehroon file:bg-opacity-90
+                                    hover:file:bg-opacity-100"
+                      />
+                      <span className="text-mehroon">Book Cover</span>
+                    </div>
+                  )}
+                                  
                   </div>
                 </div>
               </div>
@@ -251,34 +323,47 @@ const UploadBlog = () => {
                     </div>
                   </div>
                 </div>
-                
-                <div>
-                  <label className="text-text">Publication Date</label>
-                  <input
-                    type="date"
-                    value={publicationDate}
-                    onChange={(e) => setPublicationDate(e.target.value)}
-                    className="w-full px-4 py-1 border border-mehroon bg-orange rounded-lg ring-lorange text-offwhite font-Display text-btn focus:outline-none focus:ring focus:border-orange"
-                    required
-                  />
+                <div className="flex flex-row justify-evenly">
+                  <div>
+                    <label className="text-text">Date</label>
+                    <input
+                      type="date"
+                      value={publicationDate}
+                      onChange={(e) => setPublicationDate(e.target.value)}
+                      className="w-full px-4 py-1 border border-mehroon bg-orange rounded-lg ring-lorange text-offwhite font-Display text-btn focus:outline-none focus:ring focus:border-orange"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
 
               <div className="mt-4">
-                <label htmlFor="editor" className="text-text font-bold mb-4">
+                <label htmlFor="editor" className="text-subheading font-bold mb-4">
+                  <br />
                   Convert thoughts to text here
+                  <br />
                 </label>
                 <div className="mt-1">
-                    <BlogEditor/>
+                    <BlogEditor
+                      EditorClassname = "h-48 bg-orange rounded-lg border-2 border-mehroon"
+                      TxtAreaClassname = "bg-lorange p-4 min-h-80 rounded-lg"
+                    />
                 </div>
               </div>
               <div className="flex justify-end">
-                <button
+                <Button
+                  containerclassName = "h-12 px-5 bg-transparent text-mehroon border-mehroon border-2 hover:shadow-lg hover:bg-mehroon hover:text-white"
+                  onClick= {() => {SetStatus("Draft")}}
                   type="submit"
-                  className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600"
-                >
-                  Publish
-                </button>
+                  name= "Save as Draft"
+                />
+
+                <Button
+                  containerclassName = "h-12 px-5 hover:shadow-lg hover:border-mehroon hover:border-2"
+                  onClick= {() => {SetStatus("Published")}}
+                  type="submit"
+                  name= "Publish"
+                />
               </div>
             </form>
           </div>

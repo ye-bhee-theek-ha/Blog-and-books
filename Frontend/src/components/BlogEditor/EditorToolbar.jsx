@@ -28,18 +28,19 @@ import {
   insertImage,
   clearFormatting,
 } from './utils';
+import PropTypes from 'prop-types'
 
-const EditorToolbar = () => {
+const EditorToolbar = (props) => {
   const editor = useSlate();
 
   return (
-    <div className="bg-gray-200 p-2 mb-2 rounded-md flex items-center">
+    <div className={"p-2 mb-2 rounded-md flex items-center " + props.WrapperClassname}>
       <button
         type="button"
         className={`px-2 py-1 rounded-md mr-2 ${
           isFormatActive(editor, 'bold')
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-300 text-gray-600'
+            ? props.BtnActive
+            : props.BtnNotActive
         }`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -53,8 +54,8 @@ const EditorToolbar = () => {
         type="button"
         className={`px-2 py-1 rounded-md mr-2 ${
           isFormatActive(editor, 'italic')
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-300 text-gray-600'
+            ? props.BtnActive
+            : props.BtnNotActive
         }`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -68,8 +69,8 @@ const EditorToolbar = () => {
         type="button"
         className={`px-2 py-1 rounded-md mr-2 ${
           isFormatActive(editor, 'underline')
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-300 text-gray-600'
+            ? props.BtnActive
+            : props.BtnNotActive
         }`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -79,14 +80,14 @@ const EditorToolbar = () => {
         <IconUnderline className="w-5 h-5" strokeWidth={2} />
       </button>
 
-      <div className="border-l border-gray-400 mx-2 h-6"></div>
+      <div className="border-l border-mehroon mx-2 h-6"></div>
       
       <button
         type="button"
         className={`px-2 py-1 rounded-md mr-2 ${
           isBlockActive(editor, 'heading-one')
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-300 text-gray-600'
+            ? props.BtnActive
+            : props.BtnNotActive
         }`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -100,8 +101,8 @@ const EditorToolbar = () => {
         type="button"
         className={`px-2 py-1 rounded-md mr-2 ${
           isBlockActive(editor, 'heading-two')
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-300 text-gray-600'
+            ? props.BtnActive
+            : props.BtnNotActive  
         }`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -115,8 +116,8 @@ const EditorToolbar = () => {
         type="button"
         className={`px-2 py-1 rounded-md mr-2 ${
           isBlockActive(editor, 'list-item')
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-300 text-gray-600'
+            ? props.BtnActive
+            : props.BtnNotActive
         }`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -130,8 +131,8 @@ const EditorToolbar = () => {
         type="button"
         className={`px-2 py-1 rounded-md mr-2 ${
           isBlockActive(editor, 'list-item')
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-300 text-gray-600'
+            ? props.BtnActive
+            : props.BtnNotActive
         }`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -141,14 +142,14 @@ const EditorToolbar = () => {
         <IconListCheck className="w-5 h-5" strokeWidth={2} />
       </button>
 
-      <div className="border-l border-gray-400 mx-2 h-6"></div>
+      <div className="border-l border-mehroon mx-2 h-6"></div>
 
       <button
         type="button"
         className={`px-2 py-1 rounded-md mr-2 ${
           isAlignmentActive(editor, 'left')
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-300 text-gray-600'
+            ? props.BtnActive
+            : props.BtnNotActive
         }`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -162,8 +163,8 @@ const EditorToolbar = () => {
         type="button"
         className={`px-2 py-1 rounded-md mr-2 ${
           isAlignmentActive(editor, 'center')
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-300 text-gray-600'
+            ? props.BtnActive
+            : props.BtnNotActive
         }`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -177,8 +178,8 @@ const EditorToolbar = () => {
         type="button"
         className={`px-2 py-1 rounded-md mr-2 ${
           isAlignmentActive(editor, 'right')
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-300 text-gray-600'
+            ? props.BtnActive
+            : props.BtnNotActive
         }`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -192,8 +193,8 @@ const EditorToolbar = () => {
         type="button"
         className={`px-2 py-1 rounded-md ${
           isAlignmentActive(editor, 'justify')
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-300 text-gray-600'
+            ? props.BtnActive
+            : props.BtnNotActive
         }`}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -203,11 +204,11 @@ const EditorToolbar = () => {
         <IconAlignJustified className="w-5 h-5" strokeWidth={2} />
       </button>
 
-      <div className="border-l border-gray-400 mx-2 h-6"></div>
+      <div className="border-l border-mehroon mx-2 h-6"></div>
 
       <button
         type="button"
-        className="px-2 py-1 rounded-md mr-2 bg-gray-300 text-gray-600"
+        className={"px-2 py-1 rounded-md mr-2 " + props.BtnNotActive}
         onClick={() => insertLink(editor)}
       >
         <IconLink className="w-5 h-5" strokeWidth={2} />
@@ -215,17 +216,17 @@ const EditorToolbar = () => {
 
       <button
         type="button"
-        className="px-2 py-1 rounded-md mr-2 bg-gray-300 text-gray-600"
+        className={"px-2 py-1 rounded-md mr-2 " + props.BtnNotActive}
         onClick={() => insertImage(editor)}
       >
         <IconPhotoScan className="w-5 h-5" strokeWidth={2} />
       </button>
 
-      <div className="border-l border-gray-400 mx-2 h-6"></div>
+      <div className="border-l border-mehroon mx-2 h-6"></div>
 
       <button
         type="button"
-        className="px-2 py-1 rounded-md mr-2 bg-gray-300 text-gray-600"
+        className={"px-2 py-1 rounded-md mr-2 " + props.BtnNotActive}
         onClick={() => clearFormatting(editor)}
       >
         <IconX className="w-5 h-5" strokeWidth={2} />
@@ -233,5 +234,17 @@ const EditorToolbar = () => {
     </div>
   );
 };
+
+EditorToolbar.propTypes = {
+  WrapperClassname: PropTypes.string,
+  BtnActive: PropTypes.string,
+  BtnNotActive: PropTypes.string
+}
+
+EditorToolbar.defaultProps = {
+  WrapperClassname: "",
+  BtnActive: "",
+  BtnNotActive: ""
+}
 
 export default EditorToolbar;

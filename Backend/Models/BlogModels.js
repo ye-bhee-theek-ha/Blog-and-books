@@ -10,6 +10,10 @@ const BlogSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    authorName: {
+        type: String,
+        required: true,
+    },
     author: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User', // Assuming you have a User model for authors
@@ -28,25 +32,21 @@ const BlogSchema = mongoose.Schema({
     }],
     visibility: {
         type: String,
-        enum: ['public', 'private'],
-        default: 'draft',
+        enum: ['Public', 'Private'],
+        default: 'public',
     },
     status: {
         type: String,
-        enum: ['published', 'draft', 'archived'],
-        default: 'draft',
+        enum: ['Published', 'Draft', 'Archived'],
+        default: 'Published',
     },
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment',
     }],
-    // featuredImage: {
-    //     type: String,
-    // },
-    relatedPosts: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Blog',
-    }],
+    featuredImage: {
+        type: String,
+    },
     likes: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -54,14 +54,13 @@ const BlogSchema = mongoose.Schema({
     wordCount: {
         type: Number,
         default: function () {
-            // Calculate word count based on content
-            return this.content.split(/\s+/).length;
+            const content = JSON.parse(this.content)
+            return content.split(/\s+/).length;
         }
     },
     readingTime: {
         type: Number,
         default: function () {
-            // Calculate reading time based on average reading speed (e.g., 200 words per minute)
             return Math.ceil(this.wordCount / 200);
         }
     },
