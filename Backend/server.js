@@ -9,14 +9,18 @@ const Routes = require("./Routes/Routes");
 
 const { NotFound, errHandler } = require("./middlewares/errorMiddleware");
 
+const bodyParser = require('body-parser');
+
 const app = express();
 
 var cors = require('cors')
 app.use(cors())
 
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
 connectDB();
 app.use(express.json());
-
 
 
 app.get("/", (req, res) => {

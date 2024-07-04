@@ -64,6 +64,11 @@ const BlogSchema = mongoose.Schema({
             return Math.ceil(this.wordCount / 200);
         }
     },
+    slug: {
+        type: String,
+        unique: true,
+        required: true,
+    }
 });
 
 const Blog = mongoose.model("Blog", BlogSchema);

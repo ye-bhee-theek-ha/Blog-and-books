@@ -173,18 +173,47 @@ const UploadBlog = () => {
   
 
   const handleImageChange = (event) => {
-    const img = event.target.files[0];
+    console.log("img change")
+     const img = event.target.files[0];
     if (img) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result.split(",")[1];
-        console.log("Base64 String:", base64String);
-        setImage64(base64String);
-      };
-      const url = URL.createObjectURL(img);
-      setImage(url);
+        const reader = new FileReader();
+        
+        // Logging to check if img is properly selected
+        console.log("Image selected:", img);
+        
+        reader.onloadend = () => {
+            const base64String = reader.result.split(",")[1];
+            
+            // Logging to ensure reader loads correctly
+            console.log("FileReader result:", reader.result);
+            
+            console.log("Base64 String:", base64String);
+            
+            // Ensure setImage64 is being called
+            setImage64(base64String);
+            
+            // Logging to confirm setImage64 call
+            console.log("setImage64 called");
+        };
+        
+        reader.onerror = (error) => {
+            // Handle error if FileReader encounters an issue
+            console.error("FileReader error:", error);
+        };
+        
+        reader.readAsDataURL(img);
+        
+        const url = URL.createObjectURL(img);
+        
+        // Logging to check if URL is created correctly
+        console.log("Image URL:", url);
+        
+        setImage(url);
+        
+        // Logging to confirm setImage call
+        console.log("setImage called");
     } else {
-      console.log("No image selected");
+        console.log("No image selected");
     }
   };
 

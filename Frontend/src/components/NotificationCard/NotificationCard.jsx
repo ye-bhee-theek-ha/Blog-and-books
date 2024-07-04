@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 const NotificationCard = (props) => {
 
     return(
-        <div className={"flex flex-col m-2 min-h-60 min-w-60 w-fit rounded-3xl bg-green text-mehroon border-pink border-2" 
+        <div className={"flex flex-col m-2 min-h-60 min-w-52 w-fit rounded-3xl bg-green text-mehroon border-pink border-2" 
                         + " " 
                         + props.containerclassName}>
             <div className='w-full h-fit min-h-8 px-6 border-b-2 border-pink'>

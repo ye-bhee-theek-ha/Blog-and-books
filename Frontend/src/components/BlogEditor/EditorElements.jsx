@@ -17,13 +17,13 @@ const Element = ({ attributes, children, element }) => {
       )
     case 'heading-one':
       return (
-        <h1 className='text-heading font-bold' style={style} {...attributes}>
+        <h1 className='text-subheading font-bold' style={style} {...attributes}>
           {children}
         </h1>
       )
     case 'heading-two':
       return (
-        <h2 className='text-subheading font-semibold' style={style} {...attributes}>
+        <h2 className='text-profilehead font-semibold' style={style} {...attributes}>
           {children}
         </h2>
       )

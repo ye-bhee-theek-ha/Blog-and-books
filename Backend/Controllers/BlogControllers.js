@@ -2,44 +2,61 @@ const Blog = require('../Models/BlogModels');
 const Tag = require('../Models/TagModels');
 const Comment = require('../Models/CommentModels');
 const User = require("../Models/UserModels")
+const slugify = require('slugify');
 
 // Create a new blog post
 const createBlog = async (req, res) => {
+    console.log(req.body);
     try {
         const { title, authorName, tags, content, publicationDate, visibility, status, image } = req.body;
-        
+
+        // Parse JSON content
         const parsedContent = JSON.parse(content);
 
+        // Extract text from parsed content
         const extractText = (nodes) => {
             let text = '';
-            nodes.forEach(node => {
-                if (node.children) {
-                    text += extractText(node.children);
-                } else if (node.text) {
-                    text += node.text;
-                }
-            });
+            if (nodes) {
+                nodes.forEach(node => {
+                    if (node.children) {
+                        text += extractText(node.children);
+                    } else if (node.text) {
+                        text += node.text;
+                    }
+                });
+            }
             return text;
-        }; 
+        };
 
         const contentText = extractText(parsedContent);
 
+        // Calculate word count and reading time
         const wordCount = contentText.split(/\s+/).length;
-
         const readingTime = Math.ceil(wordCount / 200);
+
+        // Generate a unique slug
+        let slug = slugify(title, { lower: true, strict: true });
+        let existingBlog = await Blog.findOne({ slug });
+        let suffix = 1;
+        while (existingBlog) {
+            slug = `${slug}-${suffix}`;
+            existingBlog = await Blog.findOne({ slug });
+            suffix++;
+        }
 
         const newBlog = new Blog({
             title,
             authorName,
             author: req.user._id,
             tags: JSON.parse(tags),
-            content: JSON.stringify(parsedContent), 
+            content: JSON.stringify(parsedContent),
             publicationDate,
             visibility,
             status,
             featuredImage: image,
             wordCount,
-            readingTime
+            readingTime,
+            slug
         });
 
         await newBlog.save();
@@ -49,7 +66,6 @@ const createBlog = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
 
 // Get all blog posts
 const getAllBlogs = async (req, res) => {
