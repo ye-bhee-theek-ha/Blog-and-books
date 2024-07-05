@@ -4,15 +4,15 @@ import PropTypes from 'prop-types'
 const NotificationCard = (props) => {
 
     return(
-        <div className={"flex flex-col m-2 min-h-60 min-w-52 w-fit rounded-3xl bg-green text-mehroon border-pink border-2" 
+        <div className={"flex flex-col m-2 h-fit w-fit rounded-2xl  text-mehroon border-mehroon border-2 flex-wrap " 
                         + " " 
                         + props.containerclassName}>
-            <div className='w-full h-fit min-h-8 px-6 border-b-2 border-pink'>
+            <div className='w-full h-fit min-h-8 px-3 border-b-2 border-mehroon rounded-t-2xl bg-lorange'>
                 <div className='flex text-text justify-start'>
                     {props.title}
                 </div>
             </div>
-            <div className={'flex flex-1 flex-col flex-wrap justify-center content-start w-full p-6'}>
+            <div className={'flex flex-1 flex-col flex-wrap justify-evenly rounded-b-2xl content-start w-full p-3 py-5 bg-mehroon bg-opacity-25'}>
                 {props.children}
             </div>
         </div>

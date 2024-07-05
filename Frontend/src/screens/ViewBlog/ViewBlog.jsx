@@ -51,10 +51,17 @@ const ViewBlog = () => {
         setComments(blog.comments)
         setContent(blog.content)
         setPublicationDate(blog.publicationDate)
-        setFeaturedImage(blog.featuredImage)
         setStatus(blog.status)
         setVisibility(blog.visibility)
         setReadingTime(blog.readingTime)
+
+        const base64Image = `data:image/jpeg;base64,${blog.featuredImage}`;
+        setFeaturedImage(base64Image);
+
+        if (visibility == "Private")
+        {
+
+        }
 
         setLoading(false)
       } catch (error) {
@@ -74,22 +81,71 @@ const ViewBlog = () => {
   return (
     <div className="min-h-screen h-full w-full">
       <Navbar />
-      <div className='mx-6 my-8 grid grid-cols-2 md:grid-cols-3'>
+      <div className='mx-6 my-8 grid grid-cols-3 lg:grid-cols-4'>
 
-        <div className='col-span-2 md:col-span-1 pr-5 mt-24'>
+      {message != "" && 
+        <div className="px-4 py-6 border-2 border-mehroon bg-mehroon bg-opacity-50 text-text text-mehroon">
+          {message}
+        </div>
+      }
+
+        <div className='col-span-4 lg:col-span-1 lg:mx-24 flex justify-center pr-5 mt-12'>
           <NotificationCard
             title="Details"
-          />
+          >
+            <div className="text-btn text-mehroon flex flex-row flex-wrap justify-start">
+              <div className= "font-medium my-1 mx-1 flex flex-col items-start">
+                Author:
+                <button
+                 className="mt-1 ml-1 font-normal"
+                  onclick = {() => {console.log("author");}} 
+                >
+                  {author.name}
+                </button>
+              </div>
+              <div className= "font-medium my-2 mx-5 lg:mx-2 flex flex-col items-start">
+                Published on:
+                <div
+                 className="mt-1 ml-2 font-normal"
+                 disabled
+                >
+                  {publicationDate}
+                </div>
+              </div>
+              <div className= "font-medium my-2 mx-2 flex flex-col items-start">
+                Reading Time:
+                <div
+                 className="mt-1 ml-2 font-normal"
+                >
+                  {readingTime} min(s)
+                </div>
+              </div>
+            </div>
+          </NotificationCard>
         </div>
 
-        <div className='col-span-2 px-2'>
-          <div>
+        <div className=' col-span-4 md:col-span-3 px-2'>
+          <div className=" flex flex-col items-start ms-20">
             <h1 className='text-mehroon text-heading font-bold'>{title}</h1>
+            <div className="flex flex-row">
+              {
+                tags.map((tag, key) => {
+                  <button 
+                    className="text-sm rounded-full bg-lorange border-1 border-mehroon p-1 mx-2 hover:bg-orange hover:bg-opacity-75 hover:border-2"
+                    onclick={console.log("tag pressed")}
+                  >
+                    {tag.name}
+                  </button>
+                })
+              }
+            </div>
           </div>
 
-          <img src={featuredImage} alt="" />
-          
-          <div>
+          <div className="w-full flex justify-center my-4">
+            <img src={featuredImage} alt="" className="rounded-lg h-96 border-mehroon border-2" />
+          </div>
+
+          <div className="text-mehroon">
             <Slate editor={editor} initialValue={initialValue} onChange={() => {}}>
               <Editable
                 readOnly 

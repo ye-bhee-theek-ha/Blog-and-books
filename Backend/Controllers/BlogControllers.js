@@ -101,8 +101,7 @@ const getAllBlogs = async (req, res) => {
             title: blog.title,
             author: {
                 _id: author._id,
-                username: author.username,
-                email: author.email
+                name: author.authorName,
             },
             tags,
             comments,
