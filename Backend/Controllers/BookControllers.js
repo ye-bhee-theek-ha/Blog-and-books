@@ -52,6 +52,16 @@ const getAllBooks = async (req, res) => {
     }
 };
 
+// Get all books only id and image
+const getAllBookIdsAndImages = async (req, res) => {
+  try {
+      const books = await Book.find({ visibility: 'public' }, '_id featuredImage');
+      res.status(200).json(books);
+  } catch (error) {
+      console.error('Error fetching book IDs and featured images:', error);
+      res.status(500).json({ error: 'Server error' });
+  }
+};
 
 // Get a single book by ID
 const getBookDetailsById = async (req, res) => {
@@ -188,6 +198,7 @@ module.exports = {
     createBook,
     getAllBooks,
     getBookById,
+    getAllBookIdsAndImages, 
     getBookDetailsById,
     updateBook,
     deleteBook

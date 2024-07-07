@@ -4,8 +4,10 @@ import axios from "axios";
 import { useAuth } from "../../Auth/Auth"
 import Button from "../../components/button/button";
 import BlogEditor from "../../components/BlogEditor/BlogEditor";
+import Resizer from "react-image-file-resizer";
 import {
-  IconX
+  IconX,
+  IconLoader
 } from "@tabler/icons-react";
 
 const UploadBlog = () => {
@@ -30,6 +32,8 @@ const UploadBlog = () => {
   const [content,  SetContent] = useState(null);
 
   const [message, setMessage] = useState("");
+  const [loading, setloading] = useState(false);
+
 
   useEffect(() => {
     fetchTags();
@@ -47,8 +51,9 @@ const UploadBlog = () => {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setloading(true);
     const token = getToken();
+
     SetContent(localStorage.getItem("content"))
 
     const data = {
@@ -62,9 +67,12 @@ const UploadBlog = () => {
       visibility: visibility,
     };
 
-    console.log(data)
-    console.log(image64)
-
+    if (!content) {
+      setMessage("Content cannot be empty");
+      setloading(false);
+      return;
+    }
+    
     try {
       const response = await axios.post(
         "http://localhost:5000/api/blogs",
@@ -74,9 +82,12 @@ const UploadBlog = () => {
         }
       );
       setMessage("Blog uploaded successfully");
+      setloading(false)
+
     } catch (error) {
       console.error("Error uploading blog:", error);
       setMessage("Error uploading blog");
+      setloading(false)
     }
   };
 
@@ -171,51 +182,32 @@ const UploadBlog = () => {
     setShowDropdown(false); // Hide dropdown after selection
   };
   
+  const resizeFile = (file) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        800, // width
+        800, // height
+        'JPEG', // format
+        100, // quality
+        0, // rotation
+        (uri) => {
+          resolve(uri);
+        },
+        'base64'
+      );
+    });
 
-  const handleImageChange = (event) => {
-    console.log("img change")
-     const img = event.target.files[0];
-    if (img) {
-        const reader = new FileReader();
-        
-        // Logging to check if img is properly selected
-        console.log("Image selected:", img);
-        
-        reader.onloadend = () => {
-            const base64String = reader.result.split(",")[1];
-            
-            // Logging to ensure reader loads correctly
-            console.log("FileReader result:", reader.result);
-            
-            console.log("Base64 String:", base64String);
-            
-            // Ensure setImage64 is being called
-            setImage64(base64String);
-            
-            // Logging to confirm setImage64 call
-            console.log("setImage64 called");
-        };
-        
-        reader.onerror = (error) => {
-            // Handle error if FileReader encounters an issue
-            console.error("FileReader error:", error);
-        };
-        
-        reader.readAsDataURL(img);
-        
-        const url = URL.createObjectURL(img);
-        
-        // Logging to check if URL is created correctly
-        console.log("Image URL:", url);
-        
-        setImage(url);
-        
-        // Logging to confirm setImage call
-        console.log("setImage called");
-    } else {
+    const handleImageChange = async (event) => {
+      const img = event.target.files[0];
+      if (img) {
+        const resizedImage = await resizeFile(img);
+        setImage64(resizedImage);
+        setImage(URL.createObjectURL(img));
+      } else {
         console.log("No image selected");
-    }
-  };
+      }
+    };
 
   return (
     <div className="min-h-screen">
@@ -393,6 +385,9 @@ const UploadBlog = () => {
                   type="submit"
                   name= "Publish"
                 />
+
+                {loading && <IconLoader className="mx-2 animate-spin"/>}
+
               </div>
             </form>
           </div>

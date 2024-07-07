@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../../components/navbar/navbar";
 import axios from "axios";
-import {IconX} from "@tabler/icons-react"
+import {IconX, IconLoader} from "@tabler/icons-react"
 import { useAuth } from "../../Auth/Auth"
 import Loader from "../../components/Loader/Loader";
+import Resizer from "react-image-file-resizer";
 
 
 const UploadBook = () => {
@@ -119,17 +120,12 @@ const UploadBook = () => {
   };
   
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     const img = event.target.files[0];
     if (img) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result.split(",")[1];
-        console.log("Base64 String:", base64String);
-        setImage64(base64String);
-      };
-      const url = URL.createObjectURL(img);
-      setImage(url);
+      const resizedImage = await resizeFile(img);
+      setImage64(resizedImage);
+      setImage(URL.createObjectURL(img));
     } else {
       console.log("No image selected");
     }
@@ -141,6 +137,22 @@ const UploadBook = () => {
       setFile(bookFile);
     }
   };
+
+  const resizeFile = (file) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        800, // width
+        800, // height
+        'JPEG', // format
+        100, // quality
+        0, // rotation
+        (uri) => {
+          resolve(uri);
+        },
+        'base64'
+      );
+    });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -158,8 +170,6 @@ const UploadBook = () => {
     formData.append("featuredImage", image64);
     formData.append("bookfile", file);
     formData.append("tags", JSON.stringify(selectedTags.map(tag => tag.id)));
-
-    console.log(formData)
     
     try {
       setLoading(true);
@@ -329,13 +339,17 @@ const UploadBook = () => {
                     hover:file:bg-opacity-100"
                   />
                 </label>
+                <div className="flex flex-row justify-center items-center">
+                  <button
+                    type="submit"
+                    className="w-fit py-1 shadow bg-offwhite bg-opacity-25 border-2 text-mehroon font-medium hover:text-offwhite hover:bg-mehroon disabled:hover:bg-offwhite disabled:hover:bg-opacity-50 rounded-lg px-2"
+                    disabled={loading}
+                  >
+                    Upload Book
+                  </button>
+                  {loading && <IconLoader className="mx-2 animate-spin"/>}
 
-                <button
-                  type="submit"
-                  className="w-fit mx-auto shadow bg-offwhite bg-opacity-25 border-2 text-mehroon font-medium hover:text-offwhite hover:bg-mehroon rounded-lg px-2"
-                >
-                  Upload Book
-                </button>
+                </div>
               </div>
             </form>
           </div>

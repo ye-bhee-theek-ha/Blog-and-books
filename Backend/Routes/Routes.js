@@ -17,7 +17,7 @@ const {
 } = require('../Controllers/UserControllers');
 
 const {
-    createBook, getAllBooks, getBookById, getBookDetailsById, updateBook, deleteBook
+    createBook, getAllBooks, getBookById, getBookDetailsById, updateBook, deleteBook, getAllBookIdsAndImages
 } = require('../Controllers/BookControllers');
 
 
@@ -42,6 +42,9 @@ router.route('/blogs/:id')
 router.route('/books')
     .post(protect, authorizeAsAuthor, upload.single("bookfile"), createBook)
     .get(getAllBooks); 
+
+router.route('/booksHomePage')
+    .get(getAllBookIdsAndImages); 
 
 router.route('/book/:id')
     .get(getBookById)

@@ -7,8 +7,10 @@ import Card from "../card/Card";
 import NotificationCard from "../NotificationCard/NotificationCard";
 import Navbar from "../../components/navbar/navbar";
 import './bookshelf.css';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const BookShelf = (props) => {
+    const navigate = useNavigate()
     
     return (
         <div className="">
@@ -17,7 +19,11 @@ const BookShelf = (props) => {
             </div>
             <div className="Book Shelf flex flex-row mx-5 overflow-x-auto justify-evenly mask">
                 {props.books.map((book, index) => (
-                    <BookCard key={index} src={book} />
+                    <button
+                        onClick = {() => {navigate("/Book/" +  book._id)}} 
+                    >
+                        <BookCard key={index} src={book.featuredImage} />
+                    </button>
                 ))}
             </div>
         </div>
@@ -30,21 +36,8 @@ BookShelf.propTypes = {
 };
 
 BookShelf.defaultProps = {
-    title: "Books by the Author",
-    books: [
-        "https://picsum.photos/100/180",
-        "https://picsum.photos/120/180",
-        "https://picsum.photos/130/190",
-        "https://picsum.photos/130/150",
-        "https://picsum.photos/170/180",
-        "https://picsum.photos/190/180",
-        "https://picsum.photos/100/180",
-        "https://picsum.photos/120/180",
-        "https://picsum.photos/130/190",
-        "https://picsum.photos/130/150",
-        "https://picsum.photos/170/180",
-        "https://picsum.photos/190/180",
-    ]
+    title: "Books",
+    books: []
 };
 
 export default BookShelf;

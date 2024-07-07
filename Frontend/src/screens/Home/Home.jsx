@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import PropTypes from "prop-types";
 import { IconSearch, IconBooks } from "@tabler/icons-react";
 import Button from "../../components/button/button";
@@ -8,11 +8,38 @@ import NotificationCard from "../../components/NotificationCard/NotificationCard
 import Navbar from "../../components/navbar/navbar";
 import BookShelf from "../../components/bookshelf/bookshelf";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
+import { useAuth } from "../../Auth/Auth";
 
 const Home = (props) => {
 
   const navigate = useNavigate()
+  const [BookData, setBookData] = useState(null)
+  const [Loading, setLoading] = useState(true)
+
+  const { getToken } = useAuth();
+
+  const token = getToken();
+
+  useEffect(() => {
+    fetchBooksData();
+  }, []);
+
+  const fetchBooksData = async () => {
+    try {
+      setLoading(true);
+
+      const response = await axios.get("http://localhost:5000/api/booksHomePage", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setBookData(response.data);
+
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error("Error fetching info:", error);
+    }
+  }
 
   const blogs = [
     "https://picsum.photos/100/180",
@@ -29,6 +56,8 @@ const Home = (props) => {
     "https://picsum.photos/190/180",
   ];  
 
+
+
   return (
     <div>
       <Navbar />
@@ -41,8 +70,11 @@ const Home = (props) => {
         </div>
       </div>
 
-      <div className="my-8 bg-pink border-y-2 border-mehroon">
-        <BookShelf />
+      <div className={`mt-8 bg-pink border-y-2 border-mehroon ${Loading ? "mb-8" : ""}`}>
+        {Loading && <div className= "h-1 bg-mehroon rounded-full loading-bar w-screen overflow-hidden" />}
+        <BookShelf 
+          books = {Loading? [] : BookData}
+        />
       </div>
       <div>
         <div className="text-cardtitle text-mehroon justify-start flex mx-14 my-4">

@@ -47,6 +47,29 @@ const Profile = () => {
     return `data:image/jpeg;base64,${base64String}`;
   };
 
+  const extractDescription = (contentArray, numOfLines) => {
+    let description = '';
+    let linesAdded = 0;
+  
+    if (!contentArray)
+    {
+      return;
+    }
+
+    for (const element of contentArray) {
+      if (linesAdded >= numOfLines) break;
+  
+      const text = element.children.map(child => child.text).join(' ');
+  
+      if (text.trim()) {
+        description += (description ? ' ' : '') + text;
+        linesAdded++;
+      }
+    }
+  
+    return description;
+  };
+
   if (!profileData) {
     return (
     <div className="h-full w-full flex items-center justify-center">
@@ -119,12 +142,7 @@ const Profile = () => {
         <div className="my-8 bg-pink border-y-2 border-mehroon">
           <BookShelf
             title="Books Uploaded"
-            books={profileData.booksUploaded.map(book => ({
-              id: book._id,
-              title: book.title,
-              author: book.author,
-              cover: book.featuredImage, // Assuming the cover image is in 'featuredImage'
-            }))}
+            books={profileData.booksUploaded}
           />
         </div>
 
@@ -132,12 +150,7 @@ const Profile = () => {
         <div className="my-8 bg-pink border-y-2 border-mehroon">
           <BookShelf
             title="Liked Books"
-            books={profileData.booksLiked.map(book => ({
-              id: book._id,
-              title: book.title,
-              author: book.author,
-              cover: book.featuredImage, // Assuming the cover image is in 'featuredImage'
-            }))}
+            books={profileData.booksLiked}
           />
         </div>
 
@@ -154,13 +167,21 @@ const Profile = () => {
         </div>
 
         {/* Blogs Uploaded */}
+ 
         <div>
           <div className="text-cardtitle text-mehroon justify-start flex mx-14 my-4">
             Blogs Uploaded
           </div>
           <div className="flex flex-wrap">
             {profileData.blogsUploaded.map((blog, index) => (
-              <Card key={index} src={blog.featuredImage} />
+              <Card 
+                key={index} 
+                src={blog.featuredImage}
+                title= {blog.title}
+                discription= {extractDescription(JSON.parse(blog.content), 2)}
+                id= {blog._id}
+                readtime= {blog.readingTime}
+              />
             ))}
           </div>
         </div>

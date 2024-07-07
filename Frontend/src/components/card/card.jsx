@@ -33,7 +33,7 @@ const Card = (props) => {
                 <div className='mt-3 flex flex-row justify-between mx-12'>
                     <div className='flex flex-row'>
                         <Button
-                            name = "Read Time: 8 mins"
+                            name = {"Read Time: " + props.readtime + " mins"}
                             btnclassName = "text-blog_btn py-1"
                             containerclassName = "bg-offwhite border-mehroon border bg-opacity-50"
                         />
@@ -64,6 +64,7 @@ Card.prototypes = {
     onclick: PropTypes.func,
     src: PropTypes.string,
     id: PropTypes.string,
+    readtime: PropTypes.int,
 }
 
 Card.defaultProps = {
@@ -73,6 +74,7 @@ Card.defaultProps = {
     onClick: () => {console.log("btn pressed.")},
     src: "none",
     id: "0",
+    readtime: 2
 
 }
 
