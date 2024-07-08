@@ -1,11 +1,11 @@
 const express = require('express');
 
 const { 
-    createBlog, getAllBlogs, getBlogById, updateBlog, deleteBlog 
+    createBlog, getAllBlogs, getBlogById, updateBlog, deleteBlog, likeBlog, getlBlogikes
 } = require('../Controllers/BlogControllers');
 
 const { 
-    createComment, getCommentsForPost, updateComment, deleteComment 
+    addComment, getCommentsForPost, updateComment, deleteComment 
 } = require('../Controllers/CommentControllers');
 
 const { 
@@ -17,7 +17,7 @@ const {
 } = require('../Controllers/UserControllers');
 
 const {
-    createBook, getAllBooks, getBookById, getBookDetailsById, updateBook, deleteBook, getAllBookIdsAndImages
+    createBook, getAllBooks, getBookById, getBookDetailsById, updateBook, deleteBook, getAllBookIdsAndImages, likeBook, getBooklikes
 } = require('../Controllers/BookControllers');
 
 
@@ -37,6 +37,8 @@ router.route('/blogs/:id')
     .put(protect, authorizeAsAuthor, updateBlog)
     .delete(protect, authorizeAsAuthor, deleteBlog);
 
+router.route('/blogs/like/:id')
+    .post(protect, likeBlog)
 
 // Book Routes
 router.route('/books')
@@ -45,6 +47,11 @@ router.route('/books')
 
 router.route('/booksHomePage')
     .get(getAllBookIdsAndImages); 
+
+router.route('/book/like/:id')
+    .post(protect, likeBook)
+    .get(protect, getBooklikes)
+
 
 router.route('/book/:id')
     .get(getBookById)
@@ -57,7 +64,7 @@ router.route('/bookDetails/:id')
 
 // Comment Routes
 router.route('/comments')
-    .post(protect, createComment);
+    .post(protect, addComment);
 
 router.route('/comments/:blogId')
     .get(getCommentsForPost);

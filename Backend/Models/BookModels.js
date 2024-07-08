@@ -33,7 +33,7 @@ const BookSchema = mongoose.Schema({
     },
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Comment', // Assuming you have a Comment model
+        ref: 'Comment',
     }],
     featuredImage: {
         type: String,

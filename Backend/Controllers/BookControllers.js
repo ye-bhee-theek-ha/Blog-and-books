@@ -149,6 +149,59 @@ const updateBook = async (req, res) => {
 };
 
 
+// like a book by ID
+const likeBook = async (req, res) => {
+  try {
+    const bookId = req.params.id;
+    const userId = req.user._id; 
+
+    const book = await Book.findById(bookId);
+
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    const likeIndex = book.likes.indexOf(userId);
+
+    if (likeIndex !== -1) {
+      book.likes.splice(likeIndex, 1);
+      await book.save();
+      return res.status(200).json({ message: "Book unliked successfully", book });
+    } else {
+      book.likes.push(userId);
+      await book.save();
+      return res.status(200).json({ message: "Book liked successfully", book });
+    }
+  } catch (error) {
+    console.error("Error liking/unliking book:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+// get number of book likes by ID
+const getBooklikes = async (req, res) => {
+  try {
+    const bookId = req.params.id;
+    const userId = req.user._id; // Assuming you have the user ID from req.user
+
+    const book = await Book.findById(bookId);
+
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    // Check if the user has already liked the book
+    const isLiked = book.likes.includes(userId);
+    const likesCount = book.likes.length;
+
+    return res.status(200).json({ likesCount, isLiked });
+
+  } catch (error) {
+    console.error("Error finding number of likes of book:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 // Delete a book by ID
 const deleteBook = async (req, res) => {
@@ -201,5 +254,7 @@ module.exports = {
     getAllBookIdsAndImages, 
     getBookDetailsById,
     updateBook,
-    deleteBook
+    deleteBook,
+    likeBook,
+    getBooklikes
 };

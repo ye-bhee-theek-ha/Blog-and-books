@@ -47,7 +47,7 @@ const Navbar = (props) => {
                 <Button
                     containerclassName = "bg-transparent border text-mehroon hover:text-offwhite hover:bg-mehroon"
                     name= {props.title != "Title"? props.title : isloggedin? "Profile" : "Login"}
-                    onClick = {onnav}
+                    onClick = {props.onClick? onclick: onnav}
                 />
             </div>
 
@@ -61,7 +61,7 @@ Navbar.prototypes = {
 }
 
 Navbar.defaultProps = {
-    onClick: () => {console.log("btn pressed.")},
+    onClick: null,
     title: "Title",
 }
 

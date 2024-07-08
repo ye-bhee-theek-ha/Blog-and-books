@@ -86,7 +86,7 @@ const UploadBlog = () => {
 
     } catch (error) {
       console.error("Error uploading blog:", error);
-      setMessage("Error uploading blog");
+      setMessage( error.response.data.message? error.response.data.message : "Error uploading blog" );
       setloading(false)
     }
   };

@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Button from '../button/button';
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import { useAuth } from "../../Auth/Auth";
 
 import {
     IconHeart,
@@ -9,8 +11,20 @@ import {
 } from "@tabler/icons-react";
 
 const Card = (props) => {
-
     const navigate = useNavigate();
+    const { getToken } = useAuth();
+    const token = getToken();
+
+    const like = async () => {
+        try {  
+          const response = await axios.post(`http://localhost:5000/api/blogs/like/${props.id}`, {}, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          
+        } catch (error) {
+          console.error("Error liking:", error);
+        }
+      }
 
     return(
         <div className='flex flex-row mx-10 my-6 rounded-3xl bg-grey border-pink border-2 overflow-hidden text-mehroon col-span-1'>
@@ -21,14 +35,27 @@ const Card = (props) => {
             </div>
             <div className='flex flex-1 flex-col justify-around'>
                 <div className='flex flex-row mx-8 mr-14 text-subheading justify-between'>
-                    <h3>{props.title}</h3>
+                    <div className="relative h-24">
+                        <h3>{props.title}</h3>
+                        <div className="h-fit w-fit mx-4 space-x-2 absolute bottom-0">
+                            {props.tags.map((tag, index) => (
+                                <button
+                                    key={index}
+                                    className="text-tag_btn px-2 bg-mehroon bg-opacity-25 rounded-full border border-mehroon hover:shadow-md hover:bg-opacity-35"
+                                >
+                                {tag.name}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                     <button className='flex h-8 w-8 my-3 rounded-md border-mehroon bg-lorange border justify-center items-center ring-lpink hover:ring-2'
+                        onClick={like}
                     >
                         <IconHeartFilled className=''/>
                     </button>
                 </div>
                 <div className='flex mx-4 text-text text-start'>
-                    <p>{props.discription}</p>
+                    <p>{props.description}</p>
                 </div>
                 <div className='mt-3 flex flex-row justify-between mx-12'>
                     <div className='flex flex-row'>
@@ -38,7 +65,7 @@ const Card = (props) => {
                             containerclassName = "bg-offwhite border-mehroon border bg-opacity-50"
                         />
                         <Button
-                            name = "likes: 8"
+                            name = {"likes: " + props.likes}
                             btnclassName = "text-blog_btn py-1"
                             containerclassName = "bg-offwhite border-mehroon border bg-opacity-50"
                         />
@@ -59,23 +86,26 @@ const Card = (props) => {
 
 Card.prototypes = {
     title: PropTypes.string,
-    discription: PropTypes.string,
+    description: PropTypes.string,
     containerclassName: PropTypes.string,
     onclick: PropTypes.func,
     src: PropTypes.string,
     id: PropTypes.string,
     readtime: PropTypes.int,
+    likes: PropTypes.int,
+    tags: PropTypes.array
 }
 
 Card.defaultProps = {
     title: "Title",
-    discription: "lorem ipsium dala dolorese, okay done the lazy brown foz jumps over the lazy goats, the lazy brown foz jumps over the, the lazy brown foz jumps over the",
+    description: "lorem ipsium dala dolorese, okay done the lazy brown foz jumps over the lazy goats, the lazy brown foz jumps over the, the lazy brown foz jumps over the",
     containerclassName: "",
     onClick: () => {console.log("btn pressed.")},
     src: "none",
-    id: "0",
-    readtime: 2
-
+    id: "",
+    readtime: 2,
+    likes: 3,
+    tags: []
 }
 
 export default Card;

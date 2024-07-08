@@ -15,7 +15,11 @@ const Home = (props) => {
 
   const navigate = useNavigate()
   const [BookData, setBookData] = useState(null)
-  const [Loading, setLoading] = useState(true)
+  const [BlogData, setBlogData] = useState(null)
+  const [LoadingBook, setLoadingBook] = useState(true)
+  const [LoadingBlog, setLoadingBlog] = useState(true)
+
+  const [err, setErr] = useState(false)
 
   const { getToken } = useAuth();
 
@@ -23,40 +27,41 @@ const Home = (props) => {
 
   useEffect(() => {
     fetchBooksData();
+    fetchBlogsData();
   }, []);
 
   const fetchBooksData = async () => {
     try {
-      setLoading(true);
+      setLoadingBook(true);
 
       const response = await axios.get("http://localhost:5000/api/booksHomePage", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setBookData(response.data);
 
-      setLoading(false);
+      setLoadingBook(false);
     } catch (error) {
-      setLoading(false);
+      setLoadingBook(false);
+      setErr(true);
       console.error("Error fetching info:", error);
     }
   }
 
-  const blogs = [
-    "https://picsum.photos/100/180",
-    "https://picsum.photos/120/180",
-    "https://picsum.photos/130/190",
-    "https://picsum.photos/130/150",
-    "https://picsum.photos/170/180",
-    "https://picsum.photos/190/180",
-    "https://picsum.photos/100/180",
-    "https://picsum.photos/120/180",
-    "https://picsum.photos/130/190",
-    "https://picsum.photos/130/150",
-    "https://picsum.photos/170/180",
-    "https://picsum.photos/190/180",
-  ];  
+  const fetchBlogsData = async () => {
+    try {
+      setLoadingBlog(true);
 
-
+      const response = await axios.get("http://localhost:5000/api/blogs", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setBlogData(response.data);
+      console.log(response.data);
+      setLoadingBlog(false);
+    } catch (error) {
+      setLoadingBlog(false);
+      console.error("Error fetching info:", error);
+    }
+  }
 
   return (
     <div>
@@ -70,10 +75,10 @@ const Home = (props) => {
         </div>
       </div>
 
-      <div className={`mt-8 bg-pink border-y-2 border-mehroon ${Loading ? "mb-8" : ""}`}>
-        {Loading && <div className= "h-1 bg-mehroon rounded-full loading-bar w-screen overflow-hidden" />}
+      <div className={`mt-8 bg-pink border-y-2 border-mehroon ${LoadingBook ? "mb-8" : ""}`}>
+        {LoadingBook && <div className= "h-1 bg-mehroon rounded-full loading-bar w-screen overflow-hidden" />}
         <BookShelf 
-          books = {Loading? [] : BookData}
+          books = {LoadingBook? [] : BookData}
         />
       </div>
       <div>
@@ -81,8 +86,17 @@ const Home = (props) => {
           Blogs by the Author
         </div>
         <div>
-          {blogs.map((blog, index) => (
-            <Card key={index} src={blog} />
+          {LoadingBlog? [] : BlogData.map((blog, index) => (
+            <Card 
+              key={index} 
+              src={blog.featuredImage}
+              title={blog.title}
+              description={blog.description}
+              readtime={blog.readtime}
+              likes={blog.likes}
+              tags= {blog.tags}
+              id= {blog.id}
+            />
           ))}
         </div>
       </div>

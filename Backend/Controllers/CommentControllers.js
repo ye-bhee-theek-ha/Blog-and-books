@@ -1,15 +1,35 @@
 const Comment = require("../Models/CommentModels");
+const Blog = require("../Models/BlogModels")
 
 // Create a new comment
-const createComment = async (req, res) => {
+const addComment = async (req, res) => {
     try {
-        const newComment = new Comment(req.body);
-        await newComment.save();
-        res.status(201).json(newComment);
+      const { blogPostId, content } = req.body;
+      const authorId = req.user._id;
+  
+      const newComment = new Comment({
+        content,
+        author: authorId,
+        blogPost: blogPostId,
+      });
+  
+      const savedComment = await newComment.save();
+  
+      const blogPost = await Blog.findById(blogPostId);
+      if (!blogPost) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+  
+      blogPost.comments.push(savedComment._id);
+      await blogPost.save();
+  
+      res.status(201).json({ message: "Comment added successfully", comment: savedComment });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+      console.error("Error adding comment:", error);
+      res.status(500).json({ message: "Server error" });
     }
-};
+  };
+  
 
 // Get comments for a blog post
 const getCommentsForPost = async (req, res) => {
@@ -42,7 +62,7 @@ const deleteComment = async (req, res) => {
 };
 
 module.exports = {
-    createComment,
+    addComment,
     getCommentsForPost,
     updateComment,
     deleteComment

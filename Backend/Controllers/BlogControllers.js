@@ -4,6 +4,29 @@ const Comment = require('../Models/CommentModels');
 const User = require("../Models/UserModels")
 const slugify = require('slugify');
 
+
+const extractDescription = (contentArray, numOfLines) => {
+    let description = '';
+    let linesAdded = 0;
+  
+    if (!Array.isArray(contentArray)) {
+      return description;
+    }
+  
+    for (const element of contentArray) {
+      if (linesAdded >= numOfLines) break;
+  
+      const text = element.children.map(child => child.text).join(' ');
+  
+      if (text.trim()) {
+        description += (description ? ' ' : '') + text;
+        linesAdded++;
+      }
+    }
+  
+    return description;
+};
+
 // Create a new blog post
 const createBlog = async (req, res) => {
     console.log(req.body);
@@ -70,20 +93,46 @@ const createBlog = async (req, res) => {
 // Get all blog posts
 const getAllBlogs = async (req, res) => {
     try {
-        const blogs = await Blog.find();
-        res.status(200).json(blogs);
+      const blogs = await Blog.find().select("title tags likes content readingTime featuredImage");
+      const formattedBlogs = await Promise.all(
+        blogs.map(async (blog) => {
+            let contentArray;
+            try {
+                contentArray = JSON.parse(blog.content);
+            } catch (error) {
+                console.error("Error parsing content JSON:", error);
+                contentArray = [];
+            }
+            const description = extractDescription(contentArray, 2);
+
+            const tags = await Tag.find({ _id: { $in: blog.tags } });
+  
+          return {
+            id: blog._id,
+            title: blog.title,
+            tags,
+            likes: blog.likes.length,
+            readTime: blog.readingTime,
+            featuredImage: blog.featuredImage,
+            description,
+          };
+        })
+      );
+  
+      res.status(200).json(formattedBlogs);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+      console.error("Error fetching blogs:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-};
+  };
+  
 
 // Get a single blog post by ID
  const getBlogById = async (req, res) => {
     try {
         const blogId = req.params.id;
 
-        // Fetch blog post from Blog collection
-        const blog = await Blog.findById(blogId).populate('author', 'username email'); // Populate author details
+        const blog = await Blog.findById(blogId).populate('author', 'username email'); 
 
         if (!blog) {
             return res.status(404).json({ error: 'Blog not found' });
@@ -121,6 +170,62 @@ const getAllBlogs = async (req, res) => {
     }
 };
 
+
+// get number of blogs likes by ID
+const getBloglikes = async (req, res) => {
+    try {
+      const blogId = req.params.id;
+      const userId = req.user._id;
+  
+      const blog = await Blog.findById(bookId);
+  
+      if (!blog) {
+        return res.status(404).json({ message: "Blog not found" });
+      }
+  
+      const isLiked = blog.likes.includes(userId);
+      const likesCount = blog.likes.length;
+  
+      return res.status(200).json({ likesCount, isLiked });
+  
+    } catch (error) {
+      console.error("Error finding number of likes of Blog:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  };
+
+
+
+// like a Blog by ID
+const likeBlog = async (req, res) => {
+    try {
+      const BlogId = req.params.id;
+      const userId = req.user._id; 
+  
+      const blog = await Blog.findById(BlogId);
+  
+      if (!blog) {
+        return res.status(404).json({ message: "Blog not found" });
+      }
+  
+      const likeIndex = blog.likes.indexOf(userId);
+  
+      if (likeIndex !== -1) {
+        blog.likes.splice(likeIndex, 1);
+        await blog.save();
+        return res.status(200).json({ message: "blog unliked successfully", blog });
+      } else {
+        blog.likes.push(userId);
+        await blog.save();
+        return res.status(200).json({ message: "blog liked successfully", blog });
+      }
+    } catch (error) {
+      console.error("Error liking/unliking blog:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  };
+
+
 // Update a blog post by ID
 const updateBlog = async (req, res) => {
     try {
@@ -153,5 +258,7 @@ module.exports = {
     getBlogById,
     getAllBlogs,
     deleteBlog,
-    updateBlog
+    updateBlog,
+    likeBlog,
+    getBloglikes,
 }

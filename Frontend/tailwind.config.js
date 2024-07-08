@@ -25,9 +25,11 @@ module.exports = {
         'subheading': '36px',
         "cardtitle": "40px",
         "profilehead": "30px",
-        'text': '24px',
-        'btn': '20px',
-        "bolg_btn": "24px"
+        'text': '20px',
+        'btn': '18px',
+        "blog_btn": "24px",
+        "tag_btn": "18px"
+
       }
     },
   },
